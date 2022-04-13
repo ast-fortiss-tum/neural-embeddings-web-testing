@@ -1,13 +1,7 @@
 # Doc2Vec_embedding_for_html
 This repo uses Doc2vec and embeddings to distinguish between clone and distinct html pages (states) <br>
 
-The dataset used to train the model and the trained model can be found at the following link: https://e1.pcloud.link/publink/show?code=kZCvXzZN8GHDg1TydR2471NTPGLWFmyyu4V. <br> Add them to the git repository to run the scripts and reproduce the results. The scripts must be run from the same folder in which they are stored. The directory tree must be the same as the one of the repo for the scripts to work. i.e: <br>
-- git repo:
-   - app_results
-   - csv_results_table
-   - dataset
-   - script
-   - trained_model
+The dataset used to train the model and the trained model can be found at the following link: https://e1.pcloud.link/publink/show?code=kZCvXzZN8GHDg1TydR2471NTPGLWFmyyu4V. <br> Add them to the git repository to run the scripts and reproduce the results. The scripts must be run from the same folder in which they are stored. <br>
 
 Files description:<br>
 - script/01.warc2html.py: extracts all htmls from the warc files adn stores them in the folder commoncrawl.org

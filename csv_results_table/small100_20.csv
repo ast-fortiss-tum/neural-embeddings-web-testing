@@ -1,0 +1,37 @@
+Embedding,Classifier,Precision,Accuracy,F1 score,Recall
+Content only,Nearest Neighbors,91.76%,86.79%,90.94%,90.14%
+Content only,Linear SVM,75.33%,75.91%,85.93%,100.00%
+Content only,RBF SVM,92.78%,87.82%,91.62%,90.49%
+Content only,Decision Tree,95.09%,88.34%,91.80%,88.73%
+Content only,Random Forest,93.41%,87.82%,91.56%,89.79%
+Content only,Neural Net,87.25%,85.49%,90.51%,94.01%
+Content only,AdaBoost,94.96%,86.53%,90.41%,86.27%
+Content only,Naive Bayes,89.30%,87.31%,91.60%,94.01%
+Content only,QDA,89.30%,87.31%,91.60%,94.01%
+Tags only,Nearest Neighbors,95.53%,95.08%,96.70%,97.89%
+Tags only,Linear SVM,76.34%,77.20%,86.59%,100.00%
+Tags only,RBF SVM,94.00%,94.82%,96.58%,99.30%
+Tags only,Decision Tree,95.55%,95.34%,96.88%,98.24%
+Tags only,Random Forest,95.24%,95.34%,96.89%,98.59%
+Tags only,Neural Net,91.91%,93.52%,95.78%,100.00%
+Tags only,AdaBoost,95.25%,95.60%,97.06%,98.94%
+Tags only,Naive Bayes,95.82%,94.56%,96.32%,96.83%
+Tags only,QDA,95.82%,94.56%,96.32%,96.83%
+Content and tags,Nearest Neighbors,93.12%,88.08%,91.79%,90.49%
+Content and tags,Linear SVM,74.35%,74.61%,85.29%,100.00%
+Content and tags,RBF SVM,92.41%,90.16%,93.38%,94.37%
+Content and tags,Decision Tree,91.20%,87.05%,91.20%,91.20%
+Content and tags,Random Forest,93.63%,86.79%,90.74%,88.03%
+Content and tags,Neural Net,87.66%,86.53%,91.22%,95.07%
+Content and tags,AdaBoost,96.15%,88.60%,91.91%,88.03%
+Content and tags,Naive Bayes,89.04%,87.31%,91.62%,94.37%
+Content and tags,QDA,89.04%,87.31%,91.62%,94.37%
+Ensamble,Nearest Neighbors,95.83%,94.82%,96.50%,97.18%
+Ensamble,Linear SVM,83.73%,85.49%,91.00%,99.65%
+Ensamble,RBF SVM,94.95%,95.60%,97.07%,99.30%
+Ensamble,Decision Tree,95.45%,93.78%,95.79%,96.13%
+Ensamble,Random Forest,96.52%,95.60%,97.02%,97.54%
+Ensamble,Neural Net,92.81%,91.19%,94.10%,95.42%
+Ensamble,AdaBoost,96.14%,94.56%,96.31%,96.48%
+Ensamble,Naive Bayes,96.00%,91.97%,94.45%,92.96%
+Ensamble,QDA,95.65%,91.71%,94.29%,92.96%

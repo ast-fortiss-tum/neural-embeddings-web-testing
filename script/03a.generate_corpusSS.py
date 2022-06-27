@@ -1,3 +1,7 @@
+"""
+This script extracts the tags, content, tags+content from the pages of SS (subject set)
+"""
+
 from concurrent.futures import process
 from os.path import join, exists
 from os import walk
@@ -9,14 +13,16 @@ from multiprocessing import Pool, cpu_count
 from tqdm import tqdm
 
 import sys
+
 #  fix maximum recursion depth exceeded while calling a Python object
 sys.setrecursionlimit(10000)
 
-corpus_path = '../dataset/GroundTruthModels'
+corpus_path = 'D:\\doc2vec\\dataset\\GroundTruthModels'
+
 
 def html_structure_content(bs, corpus):
     try:
-        if(type(bs) == NavigableString):
+        if (type(bs) == NavigableString):
             tokens = gensim.utils.simple_preprocess(bs.string)
             if len(tokens) > 0:
                 corpus[0].extend(tokens)
@@ -46,8 +52,10 @@ def html_structure_content(bs, corpus):
         print('html structure content error', e)
         pass
 
+
 tasks = next(walk(corpus_path))[1]
 tasks.sort()
+
 
 def process_app(app_name):
     # print(app_name)
@@ -56,9 +64,9 @@ def process_app(app_name):
     for html in html_files:
         try:
             html_path = join(app_path, html)
-            content_path = join(app_path, html+'.content')
-            tags_path = join(app_path, html+'.tags')
-            content_tags_path = join(app_path, html+'.content_tags')
+            content_path = join(app_path, html + '.content')
+            tags_path = join(app_path, html + '.tags')
+            content_tags_path = join(app_path, html + '.content_tags')
 
             if exists(content_path) or exists(tags_path) or exists(content_tags_path):
                 continue
@@ -80,10 +88,10 @@ def process_app(app_name):
         except:
             print('error in', app_name, html)
 
+
 if __name__ == '__main__':
-    p = Pool(cpu_count() -1)
+    p = Pool(cpu_count() - 1)
     with p:
         with tqdm(total=len(tasks)) as pbar:
             for i, _ in enumerate(p.imap_unordered(process_app, tasks)):
                 pbar.update()
-

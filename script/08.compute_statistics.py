@@ -34,9 +34,10 @@ def cohend(d1, d2):
 
     return result, d
 
+
 if __name__ == '__main__':
-    df = pd.read_excel('../app_results/app_comparison_baseline.xlsx', engine='openpyxl')
-    df = df.iloc[:,:-2]
+    df = pd.read_excel('..\\app_results\\app_comparison_baseline.xlsx', engine='openpyxl')
+    # df = df.iloc[:, :-2]
     # print(df.head())
     f_clone_DT = list(df[df['Classifier'] == 'Decision Tree']['f1 pos_clone'])
     f_distinct_DT = list(df[df['Classifier'] == 'Decision Tree']['f1 pos_distinct'])
@@ -53,11 +54,6 @@ if __name__ == '__main__':
     w3, p3 = wilcoxon(f_clone_DT, f_clone_DOM)
     w4, p4 = wilcoxon(f_distinct_DT, f_distinct_DOM)
 
-    print(f'DT vs Visual_PDiff, pos = clone, wilcoxon: {w1}, p: {p1}')
-    print(f'DT vs Visual_PDiff, pos = distinct, wilcoxon: {w2}, d: {p2}')
-    print(f'DT vs DOM_RTED, pos = clone, wilcoxon: {w3}, p: {p3}')
-    print(f'DT vs DOM_RTED, pos = distinct, wilcoxon: {w4}, p: {p4}\n')
-
     # compute effect size
     r1, d1 = cohend(f_clone_DT, f_clone_PD)
     r2, d2 = cohend(f_distinct_DT, f_distinct_PD)
@@ -65,9 +61,7 @@ if __name__ == '__main__':
     r3, d3 = cohend(f_clone_DT, f_clone_DOM)
     r4, d4 = cohend(f_distinct_DT, f_distinct_DOM)
 
-    print(f'DT vs Visual_PDiff, pos = clone, effect size: {r1}, d: {d1}')
-    print(f'DT vs Visual_PDiff, pos = distinct, effect size: {r2}, d: {d2}')
-    print(f'DT vs DOM_RTED, pos = clone, effect size: {r3}, d: {d3}')
-    print(f'DT vs DOM_RTED, pos = distinct, effect size: {r4}, d: {d4}')
-
-
+    print(f'DT(Doc2Vec) vs Visual_PDiff, pos = clone, p: {p1} eff_size: {r1}')
+    print(f'DT(Doc2Vec) vs Visual_PDiff, pos = distinct, p: {p2} eff_size: {r2}')
+    print(f'DT(Doc2Vec) vs DOM_RTED, pos = clone, p: {p3} eff_size: {r3}')
+    print(f'DT(Doc2Vec) vs DOM_RTED, pos = distinct, p: {p4} eff_size: {r4}')

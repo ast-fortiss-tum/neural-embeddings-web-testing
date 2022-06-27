@@ -1,3 +1,7 @@
+"""
+This script generates the training set for the pages in DS (Data Set)
+"""
+
 from os.path import join
 from os import mkdir, walk
 import json
@@ -6,7 +10,7 @@ from tqdm import tqdm
 
 all_html_path = 'D:\\doc2vec\\dataset\\all_html'
 output_path = 'D:\\doc2vec\\dataset\\training_sets'
-# .csv, .json expoted from DS.db
+# .csv, .json exported from DS.db
 db_test_set_path = 'D:\\doc2vec\\dataset\\DS.csv'
 db_test_set_path2 = 'D:\\doc2vec\\dataset\\DS.json'
 
@@ -91,7 +95,7 @@ for app_name in app_names:
     pbar.update()
 
 # save df, save content_train..
-df.to_csv(join(output_path, 'threshold_set.csv'))
+df.to_csv(join(output_path, 'DS_threshold_set.csv'))
 with open(join(output_path, 'DS_content_tags_model_train_set.json'), 'w') as fp:
     json.dump(content_tags_train_model_set, fp)
 with open(join(output_path, 'DS_tags_model_train_set.json'), 'w') as fp:

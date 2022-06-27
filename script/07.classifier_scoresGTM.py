@@ -24,33 +24,34 @@ from tqdm import tqdm
 import pickle
 from multiprocessing import Pool, cpu_count
 
-all_html_path = '../dataset/GroundTruthModels'
+all_html_path = '..\\dataset\\GroundTruthModels'
 
 model_content = Doc2Vec.load(
-    '../trained_model/FULL/content_model_train_setsize300epoch5.doc2vec.model')
+    '..\\trained_model\\FULL\\content_model_train_setsize300epoch5.doc2vec.model')
 model_tags = Doc2Vec.load(
-    '../trained_model/FULL/tags_model_train_setsize300epoch5.doc2vec.model')
+    '..\\trained_model\\FULL\\tags_model_train_setsize300epoch5.doc2vec.model')
 model_content_tags = Doc2Vec.load(
-    '../trained_model/FULL/content_tags_model_train_setsize300epoch5.doc2vec.model')
+    '..\\trained_model\\FULL\\content_tags_model_train_setsize300epoch5.doc2vec.model')
 
 # model_content = Doc2Vec.load(
-#     '../trained_model/SMALL/content_model_train_set_SMALLsize100epoch20.doc2vec.model')
+#     '..\\trained_model\\SMALL\\content_model_train_set_SMALLsize100epoch20.doc2vec.model')
 # model_tags = Doc2Vec.load(
-#     '../trained_model/SMALL/tags_model_train_set_SMALLsize100epoch20.doc2vec.model')
+#     '..\\trained_model\\SMALL\\tags_model_train_set_SMALLsize100epoch20.doc2vec.model')
 # model_content_tags = Doc2Vec.load(
-#     '../trained_model/SMALL/content_tags_model_train_set_SMALLsize100epoch20.doc2vec.model')
+#     '..\\trained_model\\SMALL\\content_tags_model_train_set_SMALLsize100epoch20.doc2vec.model')
 
 # model_content = Doc2Vec.load(
-#     '../trained_model/VERY_SMALL/content_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
+#     '..\\trained_model\\VERY_SMALL\\content_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
 # model_tags = Doc2Vec.load(
-#     '../trained_model/VERY_SMALL/tags_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
+#     '..\\trained_model\\VERY_SMALL\\tags_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
 # model_content_tags = Doc2Vec.load(
-#     '../trained_model/VERY_SMALL/content_tags_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
+#     '..\\trained_model\\VERY_SMALL\\content_tags_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
 
-df = pd.read_csv('../dataset/sets/treshold_setGS.csv')
+df = pd.read_csv('..\\dataset\\sets\\treshold_setGS.csv')
 df['answer'] = [int(row != 2) for row in df['HUMAN_CLASSIFICATION']]
 df = df.dropna(subset=['state1_content', 'state2_content', 'state1_tags',
                        'state2_tags', 'state1_content_tags', 'state2_content_tags'])
+
 
 def load_and_create_embedding(metadata, model):
     with open(join(all_html_path, metadata['path'])) as fp:
@@ -93,7 +94,6 @@ def calculate_states_similarity(inpt, s=0):
             return final_sim, row['answer']
 
         if s == 'content':
-
             metadata_content1 = json.loads(row['state1_content'])
             metadata_content2 = json.loads(row['state2_content'])
             emb1_content = load_and_create_embedding(
@@ -107,7 +107,6 @@ def calculate_states_similarity(inpt, s=0):
 
             return final_sim, row['answer']
         if s == 'tags':
-
             metadata_tags1 = json.loads(row['state1_tags'])
             metadata_tags2 = json.loads(row['state2_tags'])
             emb1_tags = load_and_create_embedding(metadata_tags1, model_tags)
@@ -120,7 +119,6 @@ def calculate_states_similarity(inpt, s=0):
             return final_sim, row['answer']
 
         if s == 'content_tags':
-
             metadata_content_tags1 = json.loads(row['state1_content_tags'])
             metadata_content_tags2 = json.loads(row['state2_content_tags'])
             emb1_content_tags = load_and_create_embedding(
@@ -139,8 +137,9 @@ def calculate_states_similarity(inpt, s=0):
         print(e, row)
         return None
 
+
 if __name__ == '__main__':
-    apps = ['addressbook','mantisbt', 'mrbs','pagekit', 'petclinic','phoenix', 'ppma']
+    apps = ['addressbook', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
     # TODO per below: tags, content, tags content all
     # apps = ['claroline', 'dimeshift','mantisbt', 'mrbs','pagekit', 'petclinic','phoenix', 'ppma']
     # apps = ['addressbook', 'claroline', 'dimeshift','mantisbt', 'mrbs','pagekit', 'petclinic','phoenix', 'ppma']
@@ -150,7 +149,7 @@ if __name__ == '__main__':
         # args = ['all']
         df2 = df[df['appname'] == app_name]
         # df2 = df
-        print('df\n' , df2.head())
+        print('df\n', df2.head())
         print('df shape: ', df2.shape)
         # GroundTruthModel
         # comparison_df = pd.read_csv('../csv_results_table/full300_5_GS.csv')
@@ -159,12 +158,13 @@ if __name__ == '__main__':
 
         # Single apps
         try:
-            comparison_df = pd.read_csv(f'../csv_results_table/full300_5_{app_name}.csv')
+            comparison_df = pd.read_csv(f'..\\csv_results_table\\full300_5_{app_name}.csv')
         except:
-            columns = ['Embedding', 'Classifier' ,'Precision' ,'Accuracy','Recall', 'F1 (clone as positive class)','F1 (distinct as positive class)']
+            columns = ['Embedding', 'Classifier', 'Precision', 'Accuracy', 'Recall', 'F1 (clone as positive class)',
+                       'F1 (distinct as positive class)']
             comparison_df = pd.DataFrame(columns=columns)
 
-        print('comp_df\n',comparison_df.head())
+        print('comp_df\n', comparison_df.head())
         for arg in args:
             X = []
             y = []
@@ -230,25 +230,20 @@ if __name__ == '__main__':
                 elif arg == 'content_tags':
                     a = 'Content and tags'
                 elif arg == 'all':
-                    a = "Ensamble"
+                    a = "Ensemble"
                 else:
                     print('nope')
-                d1 = pd.DataFrame({'Embedding' : [a], 'Classifier' : [name], 'Precision' : [precision] , 'Accuracy' : [accuracy], 'Recall' : [recall],
-                                    'F1 (clone as positive class)' : [f1],'F1 (distinct as positive class)' : [f2]})
-                comparison_df = pd.concat([comparison_df,d1])
+                d1 = pd.DataFrame(
+                    {'Embedding': [a], 'Classifier': [name], 'Precision': [precision], 'Accuracy': [accuracy],
+                     'Recall': [recall],
+                     'F1 (clone as positive class)': [f1], 'F1 (distinct as positive class)': [f2]})
+                comparison_df = pd.concat([comparison_df, d1])
             # comparison_df.to_csv('../csv_results_table/full300_5_GS.csv',index=False)
             # comparison_df.to_csv('../csv_results_table/small100_20.csv',index=False)
             # comparison_df.to_csv('../csv_results_table/verysmall30_40.csv',index=False)
 
             # app scores
-            comparison_df.to_csv(f'../csv_results_table/full300_5_{app_name}.csv' ,index=False)
-
-
-
-
-
-
+            comparison_df.to_csv(f'..\\csv_results_table\\full300_5_{app_name}.csv', index=False)
 
     #     # tn, fp, fn, tp = confusion_matrix(y_test, y_pred, labels=[0, 1]).ravel()
     #     # print(tn, fp, fn, tp)
-

@@ -1,3 +1,7 @@
+"""
+This script generates the training set for the pages in SS (Subject Set)
+"""
+
 from os.path import join
 from os import mkdir, walk
 import json
@@ -93,7 +97,7 @@ for app_name in app_names:
     pbar.update()
 
 # save df, save content_train..
-df.to_csv(join(output_path, 'threshold_set_SS.csv'))
+df.to_csv(join(output_path, 'SS_threshold_set.csv'))
 with open(join(output_path, 'SS_content_tags_model_train_set.json'), 'w') as fp:
     json.dump(content_tags_train_model_set, fp)
 with open(join(output_path, 'SS_tags_model_train_set.json'), 'w') as fp:

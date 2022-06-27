@@ -1,14 +1,17 @@
+"""
+This script moves the pages of commoncrawl.org and DS_Crawls into the same folder all_html
+"""
+
 from os.path import join
 from os import mkdir, walk
 import shutil
 
-ds_crawl_path = '../dataset/DS_Crawls'
-commoncrawl_path = '../dataset/commoncrawl.org'
-output_dataset = '../dataset/all_html'
+ds_crawl_path = 'D:\\doc2vec\\dataset\\DS_Crawls'
+commoncrawl_path = 'D:\\doc2vec\\dataset\\commoncrawl.org'
+output_dataset = 'D:\\doc2vec\\dataset\\all_html'
 
 mkdir(output_dataset)
 
-# next = list of datasets content
 #  get html in DS_Crawls and move them
 for app_name in next(walk(ds_crawl_path))[1]:
     output_app_name = join(output_dataset, app_name)

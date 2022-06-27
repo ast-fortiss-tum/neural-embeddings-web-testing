@@ -24,7 +24,7 @@ from tqdm import tqdm
 import pickle
 from multiprocessing import Pool, cpu_count
 
-all_html_path = '../dataset/all_html'
+all_html_path = '..\\dataset\\all_html'
 
 # model_content = Doc2Vec.load(
 #     '../trained_model/FULL/content_model_train_setsize300epoch5.doc2vec.model')
@@ -94,7 +94,6 @@ def calculate_states_similarity(inpt, s=0):
             return final_sim, row['answer']
 
         if s == 'content':
-
             metadata_content1 = json.loads(row['state1_content'])
             metadata_content2 = json.loads(row['state2_content'])
             emb1_content = load_and_create_embedding(
@@ -107,8 +106,8 @@ def calculate_states_similarity(inpt, s=0):
             final_sim = np.array([cos_sim_content[0, 0]])
 
             return final_sim, row['answer']
-        if s == 'tags':
 
+        if s == 'tags':
             metadata_tags1 = json.loads(row['state1_tags'])
             metadata_tags2 = json.loads(row['state2_tags'])
             emb1_tags = load_and_create_embedding(metadata_tags1, model_tags)
@@ -121,7 +120,6 @@ def calculate_states_similarity(inpt, s=0):
             return final_sim, row['answer']
 
         if s == 'content_tags':
-
             metadata_content_tags1 = json.loads(row['state1_content_tags'])
             metadata_content_tags2 = json.loads(row['state2_content_tags'])
             emb1_content_tags = load_and_create_embedding(
@@ -156,10 +154,9 @@ if __name__ == '__main__':
 
     args = ['content', 'tags', 'content_tags', 'all']
 
-
     # comparison_df = pd.read_csv('../csv_results_table/full300_5.csv')
     # comparison_df = pd.read_csv('../csv_results_table/small100_20.csv')
-    comparison_df = pd.read_csv('../csv_results_table/verysmall30_40.csv')
+    comparison_df = pd.read_csv('..\\csv_results_table\\verysmall30_40.csv')
     for arg in args:
         X = []
         y = []
@@ -181,11 +178,11 @@ if __name__ == '__main__':
             "RBF SVM",
             # "Gaussian Process",
             "Decision Tree",
-            "Random Forest",
-            "Neural Net",
-            "AdaBoost",
-            "Naive Bayes",
-            "QDA",
+            # "Random Forest",
+            # "Neural Net",
+            # "AdaBoost",
+            # "Naive Bayes",
+            # "QDA",
         ]
 
         classifiers = [
@@ -194,18 +191,20 @@ if __name__ == '__main__':
             SVC(gamma=2, C=1),
             # GaussianProcessClassifier(1.0 * RBF(1.0)),
             DecisionTreeClassifier(max_depth=5),
-            RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
-            MLPClassifier(alpha=1, max_iter=1000),
-            AdaBoostClassifier(),
-            GaussianNB(),
-            QuadraticDiscriminantAnalysis(),
+            # RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
+            # MLPClassifier(alpha=1, max_iter=1000),
+            # AdaBoostClassifier(),
+            # GaussianNB(),
+            # QuadraticDiscriminantAnalysis(),
         ]
         print(arg, 'second loop')
         for name, model in zip(names, classifiers):
-            # model = KNeighborsClassifier(n_neighbors=3)
+            # fit the classifier
             model.fit(X_train, y_train)
 
+            # predict the scores
             y_pred = model.predict(X_test)
+
             # compute metrics
             accuracy = accuracy_score(y_test, y_pred)
             f1 = f1_score(y_test, y_pred)
@@ -221,20 +220,12 @@ if __name__ == '__main__':
             elif arg == 'content_tags':
                 a = 'Content and tags'
             elif arg == 'all':
-                a = "Ensamble"
+                a = "Ensemble"
             else:
                 print('nope')
-            d1 = pd.DataFrame({'Embedding' : [a], 'Classifier' : [name], 'Precision' : [precision] , 'Accuracy' : [accuracy],
-                                'F1 score' : [f1],'Recall' : [recall]})
-            comparison_df = pd.concat([comparison_df,d1])
+            d1 = pd.DataFrame({'Embedding': [a], 'Classifier': [name], 'Precision': [precision], 'Accuracy': [accuracy],
+                               'F1 score': [f1], 'Recall': [recall]})
+            comparison_df = pd.concat([comparison_df, d1])
         # comparison_df.to_csv('../csv_results_table/full300_5.csv',index=False)
         # comparison_df.to_csv('../csv_results_table/small100_20.csv',index=False)
-        comparison_df.to_csv('../csv_results_table/verysmall30_40.csv',index=False)
-
-
-
-
-
-#     # tn, fp, fn, tp = confusion_matrix(y_test, y_pred, labels=[0, 1]).ravel()
-#     # print(tn, fp, fn, tp)
-
+        comparison_df.to_csv('..\\csv_results_table\\verysmall30_40.csv', index=False)

@@ -17,7 +17,7 @@ import sys
 #  fix maximum recursion depth exceeded while calling a Python object
 sys.setrecursionlimit(10000)
 
-corpus_path = 'D:\\doc2vec\\dataset\\GroundTruthModels'
+corpus_path = 'D:\\doc2vec\\dataset\\GroundTruthModels-SS'
 
 
 def html_structure_content(bs, corpus):

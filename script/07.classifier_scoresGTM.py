@@ -33,19 +33,6 @@ model_tags = Doc2Vec.load(
 model_content_tags = Doc2Vec.load(
     '..\\trained_model\\FULL\\content_tags_model_train_setsize300epoch5.doc2vec.model')
 
-# model_content = Doc2Vec.load(
-#     '..\\trained_model\\SMALL\\content_model_train_set_SMALLsize100epoch20.doc2vec.model')
-# model_tags = Doc2Vec.load(
-#     '..\\trained_model\\SMALL\\tags_model_train_set_SMALLsize100epoch20.doc2vec.model')
-# model_content_tags = Doc2Vec.load(
-#     '..\\trained_model\\SMALL\\content_tags_model_train_set_SMALLsize100epoch20.doc2vec.model')
-
-# model_content = Doc2Vec.load(
-#     '..\\trained_model\\VERY_SMALL\\content_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
-# model_tags = Doc2Vec.load(
-#     '..\\trained_model\\VERY_SMALL\\tags_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
-# model_content_tags = Doc2Vec.load(
-#     '..\\trained_model\\VERY_SMALL\\content_tags_model_train_set_VERY_SMALLsize100epoch20.doc2vec.model')
 
 df = pd.read_csv('..\\dataset\\sets\\treshold_setGS.csv')
 df['answer'] = [int(row != 2) for row in df['HUMAN_CLASSIFICATION']]

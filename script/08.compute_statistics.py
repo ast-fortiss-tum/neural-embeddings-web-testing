@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 from math import sqrt
 from numpy import mean
@@ -36,32 +37,74 @@ def cohend(d1, d2):
 
 
 if __name__ == '__main__':
-    df = pd.read_excel('..\\app_results\\app_comparison_baseline.xlsx', engine='openpyxl')
-    # df = df.iloc[:, :-2]
-    # print(df.head())
-    f_clone_DT = list(df[df['Classifier'] == 'Decision Tree']['f1 pos_clone'])
-    f_distinct_DT = list(df[df['Classifier'] == 'Decision Tree']['f1 pos_distinct'])
+    # df = pd.read_excel('..\\app_results\\app_comparison_baseline.xlsx', engine='openpyxl')
+    # # df = df.iloc[:, :-2]
+    # # print(df.head())
+    # f_clone_DT = list(df[df['Classifier'] == 'Decision Tree']['f1 pos_clone'])
+    # f_distinct_DT = list(df[df['Classifier'] == 'Decision Tree']['f1 pos_distinct'])
+    #
+    # f_clone_PD = list(df[df['Classifier'] == 'VISUAL_PDiff']['f1 pos_clone'])
+    # f_distinct_PD = list(df[df['Classifier'] == 'VISUAL_PDiff']['f1 pos_distinct'])
+    #
+    # f_clone_DOM = list(df[df['Classifier'] == 'DOM_RTED']['f1 pos_clone'])
+    # f_distinct_DOM = list(df[df['Classifier'] == 'DOM_RTED']['f1 pos_distinct'])
+    #
+    # # compute wilcoxon test
+    # w1, p1 = wilcoxon(f_clone_DT, f_clone_PD)
+    # w2, p2 = wilcoxon(f_distinct_DT, f_distinct_PD)
+    # w3, p3 = wilcoxon(f_clone_DT, f_clone_DOM)
+    # w4, p4 = wilcoxon(f_distinct_DT, f_distinct_DOM)
+    #
+    # # compute effect size
+    # r1, d1 = cohend(f_clone_DT, f_clone_PD)
+    # r2, d2 = cohend(f_distinct_DT, f_distinct_PD)
+    #
+    # r3, d3 = cohend(f_clone_DT, f_clone_DOM)
+    # r4, d4 = cohend(f_distinct_DT, f_distinct_DOM)
+    #
+    # print(f'DT(Doc2Vec) vs Visual_PDiff, pos = clone, p: {p1} eff_size: {r1}')
+    # print(f'DT(Doc2Vec) vs Visual_PDiff, pos = distinct, p: {p2} eff_size: {r2}')
+    # print(f'DT(Doc2Vec) vs DOM_RTED, pos = clone, p: {p3} eff_size: {r3}')
+    # print(f'DT(Doc2Vec) vs DOM_RTED, pos = distinct, p: {p4} eff_size: {r4}')
 
-    f_clone_PD = list(df[df['Classifier'] == 'VISUAL_PDiff']['f1 pos_clone'])
-    f_distinct_PD = list(df[df['Classifier'] == 'VISUAL_PDiff']['f1 pos_distinct'])
+    DOM_RTED_across_apps = [0.42, 0.78, 0.76, 0.80, 0.81, 0.82, 0.74, 0.66, 0.77]
+    PDiff_across_apps = [0.78, 0.82, 0.81, 0.67, 0.85, 0.74, 0.53, 0.76, 0.83]
+    Doc2Vec_across_app = [0.74, 0.83, 0.81, 0.87, 0.86, 0.84, 0.79, 0.82, 0.84]
 
-    f_clone_DOM = list(df[df['Classifier'] == 'DOM_RTED']['f1 pos_clone'])
-    f_distinct_DOM = list(df[df['Classifier'] == 'DOM_RTED']['f1 pos_distinct'])
+    data = {'Doc2Vec': Doc2Vec_across_app, 'DOM_RTED': DOM_RTED_across_apps, 'PDiff': PDiff_across_apps}
+    fig, ax = plt.subplots()
+    ax.boxplot(data.values())
+    ax.set_xticklabels(data.keys())
+    plt.show()
 
-    # compute wilcoxon test
-    w1, p1 = wilcoxon(f_clone_DT, f_clone_PD)
-    w2, p2 = wilcoxon(f_distinct_DT, f_distinct_PD)
-    w3, p3 = wilcoxon(f_clone_DT, f_clone_DOM)
-    w4, p4 = wilcoxon(f_distinct_DT, f_distinct_DOM)
+    w1, p1 = wilcoxon(Doc2Vec_across_app, DOM_RTED_across_apps)
+    w2, p2 = wilcoxon(Doc2Vec_across_app, PDiff_across_apps)
+    r1, d1 = cohend(Doc2Vec_across_app, DOM_RTED_across_apps)
+    r2, d2 = cohend(Doc2Vec_across_app, PDiff_across_apps)
 
-    # compute effect size
-    r1, d1 = cohend(f_clone_DT, f_clone_PD)
-    r2, d2 = cohend(f_distinct_DT, f_distinct_PD)
+    print("Across Apps")
+    print(f'Doc2Vec vs DOM_RTED, p: {p1} eff_size: {r1}')
+    print(f'Doc2Vec vs Visual_PDiff, p: {p2} eff_size: {r2}')
 
-    r3, d3 = cohend(f_clone_DT, f_clone_DOM)
-    r4, d4 = cohend(f_distinct_DT, f_distinct_DOM)
+    DOM_RTED_within_apps = [0.87, 1.00, 0.97, 0.95, 0.64, 0.64, 0.85, 0.72, 0.88]
+    PDiff_within_apps = [0.72, 1.00, 0.92, 0.92, 0.65, 0.60, 0.86, 0.69, 0.98]
+    Doc2Vec_within_app = [0.98, 1.00, 0.94, 0.96, 0.99, 0.72, 0.93, 0.98, 0.88]
 
-    print(f'DT(Doc2Vec) vs Visual_PDiff, pos = clone, p: {p1} eff_size: {r1}')
-    print(f'DT(Doc2Vec) vs Visual_PDiff, pos = distinct, p: {p2} eff_size: {r2}')
-    print(f'DT(Doc2Vec) vs DOM_RTED, pos = clone, p: {p3} eff_size: {r3}')
-    print(f'DT(Doc2Vec) vs DOM_RTED, pos = distinct, p: {p4} eff_size: {r4}')
+    data = {'Doc2Vec': Doc2Vec_within_app, 'DOM_RTED': DOM_RTED_within_apps, 'PDiff': PDiff_within_apps}
+    fig, ax = plt.subplots()
+    ax.boxplot(data.values())
+    ax.set_xticklabels(data.keys())
+    plt.show()
+
+    # DOM_RTED_within_apps = [0.87, 1.00, 0.94, 0.91, 0.65, 0.61, 0.64, 0.85, 0.67, 0.81]
+    # PDiff_within_apps = [0.73, 1.00, 0.92, 0.93, 0.65, 0.60, 0.66, 0.86, 0.69, 0.98]
+    # Doc2Vec_within_app = [0.98, 1.00, 0.94, 0.96, 0.99, 0.99, 0.69, 0.93, 0.98, 0.88]
+
+    w1, p1 = wilcoxon(Doc2Vec_within_app, DOM_RTED_within_apps)
+    w2, p2 = wilcoxon(Doc2Vec_within_app, PDiff_within_apps)
+    r1, d1 = cohend(Doc2Vec_within_app, DOM_RTED_within_apps)
+    r2, d2 = cohend(Doc2Vec_within_app, PDiff_within_apps)
+
+    print("\nWithins Apps")
+    print(f'Doc2Vec vs DOM_RTED, p: {p1} eff_size: {r1}')
+    print(f'Doc2Vec vs Visual_PDiff, p: {p2} eff_size: {r2}')

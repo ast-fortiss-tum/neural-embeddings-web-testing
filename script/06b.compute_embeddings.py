@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from gensim.models.doc2vec import Doc2Vec
 from tqdm import tqdm
@@ -12,43 +13,145 @@ if __name__ == '__main__':
     trained_models_path = 'D:\\doc2vec\\trained_model\\'
     vector_size = ['modelsize100']
     epochs = 31  # this is the best model in terms of accuracy from 07.classifier_scores_DS
-    # embedding_type = ['content', 'tags', 'content_tags']
-    embedding_type = ['content_tags']
-    # dataset = ["DS", "SS"]
-    dataset = ["SS"]
     compute_similarity = True
 
-    apps = ['addressbook', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
+    # embedding_type = ['content', 'tags', 'content_tags', 'all]
+    embedding_type = ['all']
+
+    dataset = ["SS"]  # "DS", "SS"
 
     df = None
     if "DS" in dataset:
-        # load Labeled(DS)
         df = pd.read_csv('D:\\doc2vec\\dataset\\training_sets\\DS_threshold_set.csv')
+
+        for emb in embedding_type:
+            print("computing embedding: %s\tsimilarity: %s" % (emb, str(compute_similarity)))
+
+            models = []
+            if emb == 'all':
+                # load Doc2Vec content model
+                model_content = Doc2Vec.load(trained_models_path +
+                                             'DS_' +
+                                             'content' +
+                                             '_' +
+                                             vector_size[0] +
+                                             'epoch' +
+                                             str(epochs) +
+                                             '.doc2vec.model')
+                # load Doc2Vec tags model
+                model_tags = Doc2Vec.load(trained_models_path +
+                                          'DS_' +
+                                          'tags' +
+                                          '_' +
+                                          vector_size[0] +
+                                          'epoch' +
+                                          str(epochs) +
+                                          '.doc2vec.model')
+                # load Doc2Vec content + tags model
+                model_content_tags = Doc2Vec.load(trained_models_path +
+                                                  'DS_' +
+                                                  'tags' +
+                                                  '_' +
+                                                  vector_size[0] +
+                                                  'epoch' +
+                                                  str(epochs) +
+                                                  '.doc2vec.model')
+
+                models.append(model_content)
+                models.append(model_tags)
+                models.append(model_content_tags)
+            else:
+                model = Doc2Vec.load(trained_models_path +
+                                     'DS_' +
+                                     emb +
+                                     '_' +
+                                     vector_size[0] +
+                                     'epoch' +
+                                     str(epochs) +
+                                     '.doc2vec.model')
+                models.append(model)
+
+            embeddings = []
+            pbar = tqdm(total=df.shape[0])
+            for inp in df.iterrows():
+                ret_val = compute_embeddings(inp, models, emb, compute_similarity=compute_similarity)
+                if ret_val is None:
+                    continue
+                embeddings.append(ret_val[0][0])
+                pbar.update()
+
+            df['doc2vec_distance_' + emb] = embeddings
+            df.to_csv('D:\\doc2vec\\dataset\\training_sets\\DS_threshold_set.csv')
+
     elif "SS" in dataset:
         df = pd.read_csv('D:\\doc2vec\\dataset\\training_sets\\SS_threshold_set.csv')
+        apps = ['pagekit', 'petclinic', 'phoenix', 'ppma']
+        # apps = ['addressbook']
+        for app in apps:
+            df_temp = df[df['appname'] == app]
+            print("app %s" % app)
+            for emb in embedding_type:
+                print("computing embedding: %s\tsimilarity: %s" % (emb, str(compute_similarity)))
 
-    df['answer'] = [int(row != 2) for row in df['HUMAN_CLASSIFICATION']]
-    df = df.dropna(subset=['state1_content', 'state2_content',
-                           'state1_tags', 'state2_tags',
-                           'state1_content_tags', 'state2_content_tags'])
+                models = []
+                if emb == 'all':
+                    # load Doc2Vec content model
+                    model_content = Doc2Vec.load(trained_models_path +
+                                                 'DS_' +
+                                                 'content' +
+                                                 '_' +
+                                                 vector_size[0] +
+                                                 'epoch' +
+                                                 str(epochs) +
+                                                 '.doc2vec.model')
+                    # load Doc2Vec tags model
+                    model_tags = Doc2Vec.load(trained_models_path +
+                                              'DS_' +
+                                              'tags' +
+                                              '_' +
+                                              vector_size[0] +
+                                              'epoch' +
+                                              str(epochs) +
+                                              '.doc2vec.model')
+                    # load Doc2Vec content + tags model
+                    model_content_tags = Doc2Vec.load(trained_models_path +
+                                                      'DS_' +
+                                                      'tags' +
+                                                      '_' +
+                                                      vector_size[0] +
+                                                      'epoch' +
+                                                      str(epochs) +
+                                                      '.doc2vec.model')
 
-    # for app in apps:
-    for emb in embedding_type:
-        print("computing embedding: %s\tsimilarity: %s" % (emb, str(compute_similarity)))
-        name = trained_models_path + 'DS_' + emb + '_' + vector_size[0] + 'epoch' + str(epochs) + '.doc2vec.model'
-        model = Doc2Vec.load(name)
+                    models.append(model_content)
+                    models.append(model_tags)
+                    models.append(model_content_tags)
+                else:
+                    model = Doc2Vec.load(trained_models_path +
+                                         'DS_' +
+                                         emb +
+                                         '_' +
+                                         vector_size[0] +
+                                         'epoch' +
+                                         str(epochs) +
+                                         '.doc2vec.model')
+                    models.append(model)
 
-        embeddings = []
-        pbar = tqdm(total=df.shape[0])
-        for inp in df.iterrows():
-            ret_val = compute_embeddings(inp, model, emb, compute_similarity=compute_similarity)
-            if ret_val is None:
-                continue
-            embeddings.append(ret_val[0][0])
-            pbar.update()
+                embeddings = []
+                pbar = tqdm(total=df_temp.shape[0])
+                for inp in df_temp.iterrows():
+                    ret_val = compute_embeddings(inp, models, emb, compute_similarity=compute_similarity)
+                    if ret_val is None:
+                        continue
+                    embeddings.append(ret_val[0][0])
+                    pbar.update()
 
-        df['doc2vec_distance_' + emb] = embeddings
-        if "DS" in dataset:
-            df.to_csv('D:\\doc2vec\\dataset\\training_sets\\DS_threshold_set.csv')
-        elif "SS" in dataset:
-            df.to_csv('D:\\doc2vec\\dataset\\training_sets\\SS_threshold_set.csv')
+                with open(app + '_' + emb + '.npy', 'wb') as f:
+                    np.save(f, np.array(embeddings))
+                f.close()
+
+                # df['doc2vec_distance_' + emb] = embeddings
+                # if "DS" in dataset:
+                #     df.to_csv('D:\\doc2vec\\dataset\\training_sets\\DS_threshold_set.csv')
+                # elif "SS" in dataset:
+                #     df.to_csv('D:\\doc2vec\\dataset\\training_sets\\SS_threshold_set.csv')

@@ -41,18 +41,22 @@ try:
 except:
     pass
 
-print('Training Doc2Vec models on the entire corpus of DS + commoncrawl (content)')
-train_model(train_model_set_path='D:\\doc2vec\\dataset\\train_model_corpus\\DS_content_model_train_set.line_sentence',
-            output_trained_model_path='D:\\doc2vec\\trained_model\\DS_content_model',
-            epochs=100)
+# print('Training Doc2Vec models on the entire corpus of DS + commoncrawl (content)')
+# train_model(train_model_set_path='D:\\doc2vec\\dataset\\train_model_corpus\\DS_content_model_train_set.line_sentence',
+#             output_trained_model_path='D:\\doc2vec\\trained_model\\DS_content_model')
+#
+# print('Training Doc2Vec models on the entire corpus of DS + commoncrawl (tags)')
+# train_model(train_model_set_path='D:\\doc2vec\\dataset\\train_model_corpus\\DS_tags_model_train_set.line_sentence',
+#             output_trained_model_path='D:\\doc2vec\\trained_model\\DS_tags_model')
 
-print('Training Doc2Vec models on the entire corpus of DS + commoncrawl (tags)')
-train_model(train_model_set_path='D:\\doc2vec\\dataset\\train_model_corpus\\DS_tags_model_train_set.line_sentence',
-            output_trained_model_path='D:\\doc2vec\\trained_model\\DS_tags_model',
-            epochs=100)
+# print('Training Doc2Vec models on the entire corpus of DS + commoncrawl (content + tags) vector_size=500, epochs=50')
+# train_model(
+#     train_model_set_path='D:\\doc2vec\\dataset\\train_model_corpus\\DS_content_tags_model_train_set.line_sentence',
+#     output_trained_model_path='D:\\doc2vec\\trained_model\\DS_content_tags_model',
+#     vector_size=500, epochs=50)
 
-print('Training Doc2Vec models on the entire corpus of DS + commoncrawl (content + tags)')
+print('Training Doc2Vec models on the entire corpus of DS + commoncrawl (content + tags) vector_size=1000, epochs=50')
 train_model(
     train_model_set_path='D:\\doc2vec\\dataset\\train_model_corpus\\DS_content_tags_model_train_set.line_sentence',
     output_trained_model_path='D:\\doc2vec\\trained_model\\DS_content_tags_model',
-    epochs=100)
+    vector_size=1000, epochs=50)

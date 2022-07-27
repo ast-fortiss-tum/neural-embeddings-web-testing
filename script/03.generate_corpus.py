@@ -22,7 +22,7 @@ corpus_path = 'D:\\doc2vec\\dataset\\all_html'
 
 def html_structure_content(bs, corpus):
     try:
-        if (type(bs) == NavigableString):
+        if type(bs) == NavigableString:
             tokens = gensim.utils.simple_preprocess(bs.string)
             if len(tokens) > 0:
                 corpus[0].extend(tokens)

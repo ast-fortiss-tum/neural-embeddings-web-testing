@@ -1,5 +1,6 @@
 import csv
 import os
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -21,18 +22,17 @@ if __name__ == '__main__':
     Classifiers tested on 20% app1 in SS
     '''
 
-    # TODO: add RTED and PDiff
+    OUTPUT_CSV = False
+    SAVE_MODELS = False
 
-    trained_models_path = 'D:\\doc2vec\\trained_model\\'
-    embedding_type = ['content', 'tags', 'content_tags']
-    vector_size = ['modelsize100']
-    epochs = 31  # this is the best model in terms of accuracy from 07.classifier_scores_DS
+    embedding_type = ['content', 'tags', 'content_tags', 'all', 'DOM_RTED', 'VISUAL_Hyst']
+
     apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
 
     # create csv file to store the results
-    if not os.path.exists(r'..\\csv_results_table\\rq1-within-apps.csv'):
+    if not os.path.exists(r'../csv_results_table/rq1-within-apps.csv'):
         header = ['App', 'Model', 'Embedding', 'Classifier', 'Accuracy', 'Precision', 'Recall', 'F1_0', 'F1_1']
-        with open('..\\csv_results_table\\rq1-within-apps.csv', 'w', encoding='UTF8') as f:
+        with open('../csv_results_table/rq1-within-apps.csv', 'w', encoding='UTF8') as f:
             writer = csv.writer(f)
             # write the header
             writer.writerow(header)
@@ -41,11 +41,13 @@ if __name__ == '__main__':
         for emb in embedding_type:
             print("app: %s\tembedding: %s" % (app, emb))
 
-            comparison_df = pd.read_csv('..\\csv_results_table\\rq1-within-apps.csv')
+            comparison_df = None
+            if OUTPUT_CSV:
+                comparison_df = pd.read_csv('../csv_results_table/rq1-within-apps.csv')
 
             names = [
-                "Dummy",
-                "Threshold",
+                # "Dummy",
+                # "Threshold",
                 "Nearest Neighbors",
                 "SVM RBF",
                 "Decision Tree",
@@ -56,8 +58,8 @@ if __name__ == '__main__':
             ]
 
             classifiers = [
-                DummyClassifier(strategy="stratified"),
-                "Threshold",
+                # DummyClassifier(strategy="stratified"),
+                # "Threshold",
                 KNeighborsClassifier(),
                 SVC(),
                 DecisionTreeClassifier(),
@@ -73,56 +75,55 @@ if __name__ == '__main__':
 
             for name, model in zip(names, classifiers):
 
+                if emb in {'DOM_RTED', 'VISUAL_Hyst'}:
+                    feature = emb
+                else:
+                    feature = 'doc2vec_distance_' + emb
+
                 if name == "Threshold":
-                    df_train = pd.read_csv('D:\\doc2vec\\dataset\\training_sets\\SS_threshold_set.csv')
-                    df_test = pd.read_csv('D:\\doc2vec\\dataset\\training_sets\\SS_threshold_set.csv')
+                    df_train = pd.read_csv('SS_threshold_set.csv')
+                    df_test = pd.read_csv('SS_threshold_set.csv')
 
                     df_train = df_train.query("appname == @app")
                     df_test = df_test.query("appname != @app")
 
                     # load Labeled(DS) as training set
-                    X_train = np.array(df_train['doc2vec_distance_' + emb]).reshape(-1, 1)
+                    X_train = np.array(df_train[feature]).reshape(-1, 1)
                     y_train = np.array(df_train['HUMAN_CLASSIFICATION'])
 
                     # load SS as test set (all apps)
-                    X_test = np.array(df_test['doc2vec_distance_' + emb]).reshape(-1, 1)
+                    X_test = np.array(df_test[feature]).reshape(-1, 1)
                     y_test = np.array(df_test['HUMAN_CLASSIFICATION'])
 
                     # 0, 1 = clones; 2 = distinct
-                    # an_array[an_array % 2 == 0] = 0
                     y_train[y_train == 1] = 0  # harmonize near-duplicates as 0's
                     y_train[y_train == 2] = 1  # convert distinct as 1's
 
                     y_test[y_test == 1] = 0  # harmonize near-duplicates as 0's
                     y_test[y_test == 2] = 1  # convert distinct as 1's
 
-                    # X_train = df_train['doc2vec_distance_' + emb]
-                    # y_train = df_train['HUMAN_CLASSIFICATION']
-
                     df_train = pd.DataFrame(list(zip(X_train, y_train)),
-                                            columns=['doc2vec_distance_' + emb, 'HUMAN_CLASSIFICATION'])
+                                            columns=[feature, 'HUMAN_CLASSIFICATION'])
 
                     # 0, 1 = clones; 2 = distinct
                     df_clones = df_train.query("HUMAN_CLASSIFICATION != 2")
-                    df_clones = df_clones['doc2vec_distance_' + emb].to_list()
+                    df_clones = df_clones[feature].to_list()
 
                     df_distinct = df_train.query("HUMAN_CLASSIFICATION == 2")
-                    df_distinct = df_distinct['doc2vec_distance_' + emb].to_list()
+                    df_distinct = df_distinct[feature].to_list()
 
-                    # X_test = df_test['doc2vec_distance_' + emb]
-                    # y_test = df_test['HUMAN_CLASSIFICATION']
                     df_test = pd.DataFrame(list(zip(X_test, y_test)),
-                                           columns=['doc2vec_distance_' + emb, 'HUMAN_CLASSIFICATION'])
+                                           columns=[feature, 'HUMAN_CLASSIFICATION'])
 
                     threshold = 0.8
                     # 0, 1 = clones; 2 = distinct
                     df_clones = df_test.query("HUMAN_CLASSIFICATION != 2")
-                    df_clones_test = df_clones['doc2vec_distance_' + emb]
+                    df_clones_test = df_clones[feature]
                     tp = df_clones_test[df_clones_test > threshold].count()
                     fn = len(df_clones_test) - tp
 
                     df_distinct = df_test.query("HUMAN_CLASSIFICATION == 2")
-                    df_distinct_test = df_distinct['doc2vec_distance_' + emb]
+                    df_distinct_test = df_distinct[feature]
                     fp = df_distinct_test[df_distinct_test > threshold].count()
                     tn = len(df_distinct_test) - fp
 
@@ -132,10 +133,10 @@ if __name__ == '__main__':
                     f1_0 = 2 * ((precision * recall) / (precision + recall))
                     f1_1 = 2 * ((precision * recall) / (precision + recall))
                 else:
-                    df = pd.read_csv('D:\\doc2vec\\dataset\\training_sets\\SS_threshold_set.csv')
+                    df = pd.read_csv('SS_threshold_set.csv')
                     df = df.query("appname == @app")
 
-                    X = np.array(df['doc2vec_distance_' + emb]).reshape(-1, 1)
+                    X = np.array(df[feature]).reshape(-1, 1)
                     y = np.array(df['HUMAN_CLASSIFICATION'])
 
                     # 0, 1 = clones; 2 = distinct
@@ -146,6 +147,15 @@ if __name__ == '__main__':
 
                     # fit the classifier
                     model = model.fit(X_train, y_train)
+
+                    # save the classifier
+                    if SAVE_MODELS:
+                        filename = '../trained_classifiers/within-apps-' + app + '-' + \
+                                   name.replace(" ", "-").replace("_", "-").lower() + \
+                                   '-' + \
+                                   feature.replace(" ", "-").replace("_", "-").lower() + \
+                                   '.sav'
+                        pickle.dump(model, open(filename, 'wb'))
 
                     # predict the scores
                     y_pred = model.predict(X_test)
@@ -173,14 +183,26 @@ if __name__ == '__main__':
                     a = 'Content and tags'
                 elif emb == 'all':
                     a = "Ensemble"
+                elif emb == 'DOM_RTED':
+                    a = 'DOM_RTED'
+                elif emb == 'VISUAL_Hyst':
+                    a = 'VISUAL_Hyst'
                 else:
                     print('nope')
 
-                d1 = pd.DataFrame(
-                    {'App': app, 'Model': ['DS_' + emb + '_' + vector_size[0] + 'epoch' + str(epochs)],
-                     'Embedding': [a], 'Classifier': [name], 'Accuracy': [accuracy], 'Precision': [precision],
-                     'Recall': [recall], 'F1_0': [f1_0], 'F1_1': [f1_1]})
+                if OUTPUT_CSV:
+                    d1 = pd.DataFrame(
+                        {'App': app,
+                         'Model': ['DS_' + emb + '_' + 'modelsize100' + 'epoch31'],
+                         'Embedding': [a],
+                         'Classifier': [name],
+                         'Accuracy': [accuracy],
+                         'Precision': [precision],
+                         'Recall': [recall],
+                         'F1_0': [f1_0],
+                         'F1_1': [f1_1]})
 
-                comparison_df = pd.concat([comparison_df, d1])
+                    comparison_df = pd.concat([comparison_df, d1])
 
-            comparison_df.to_csv('..\\csv_results_table\\rq1-within-apps.csv', index=False)
+            if OUTPUT_CSV:
+                comparison_df.to_csv('../csv_results_table/rq1-within-apps.csv', index=False)

@@ -1,8 +1,14 @@
 import json
+import pickle
 from os.path import join
 
+import gensim
 import numpy as np
+from bs4 import BeautifulSoup
 from sklearn.metrics.pairwise import cosine_similarity
+from bs4.element import NavigableString, Comment
+
+from abstract_function_python.main import doc2vec_model_content_tags, doc2vec_model_tags, doc2vec_model_content
 
 all_html_path = 'D:\\doc2vec\\dataset\\all_html'
 

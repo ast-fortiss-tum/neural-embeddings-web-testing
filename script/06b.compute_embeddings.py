@@ -10,7 +10,7 @@ if __name__ == '__main__':
     Compute embeddings for the sets DS and/or SS
     '''
 
-    trained_models_path = 'D:\\doc2vec\\trained_model\\'
+    trained_models_path = '../trained_model/'
     vector_size = ['modelsize100']
     epochs = 31  # this is the best model in terms of accuracy from 07.classifier_scores_DS
     compute_similarity = True
@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     df = None
     if "DS" in dataset:
-        df = pd.read_csv('D:\\doc2vec\\dataset\\training_sets\\DS_threshold_set.csv')
+        df = pd.read_csv('DS_threshold_set.csv')
 
         for emb in embedding_type:
             print("computing embedding: %s\tsimilarity: %s" % (emb, str(compute_similarity)))
@@ -81,10 +81,10 @@ if __name__ == '__main__':
                 pbar.update()
 
             df['doc2vec_distance_' + emb] = embeddings
-            df.to_csv('D:\\doc2vec\\dataset\\training_sets\\DS_threshold_set.csv')
+            df.to_csv('DS_threshold_set.csv')
 
     elif "SS" in dataset:
-        df = pd.read_csv('D:\\doc2vec\\dataset\\training_sets\\SS_threshold_set.csv')
+        df = pd.read_csv('SS_threshold_set.csv')
         apps = ['pagekit', 'petclinic', 'phoenix', 'ppma']
         # apps = ['addressbook']
         for app in apps:

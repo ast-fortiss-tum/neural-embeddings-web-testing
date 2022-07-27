@@ -130,3 +130,4 @@ dmypy.json
 
 app_results/.DS_Store
 .idea
+/script/SS_threshold_set_big.csv

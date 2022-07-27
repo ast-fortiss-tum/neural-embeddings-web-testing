@@ -132,3 +132,5 @@ app_results/.DS_Store
 .idea
 /script/SS_threshold_set_big.csv
 csv_results_table/*
+trained_classifiers/
+trained_model/

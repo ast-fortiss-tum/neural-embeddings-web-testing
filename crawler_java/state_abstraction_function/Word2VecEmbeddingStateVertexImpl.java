@@ -49,19 +49,20 @@ public class Word2VecEmbeddingStateVertexImpl extends StateVertexImpl {
             String that_URL = that.getUrl();
             String that_strippedDom = that.getStrippedDom();
 
-//            set up connection to flask
+            // set up connection to flask
             restUrl = new URL("http://127.0.0.1:5000/equals");
             connection = (HttpURLConnection) restUrl.openConnection();
 
-//            POST to pass params to python function
+            // POST to pass params to python function
             connection.setRequestMethod("POST");
 
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
             connection.setDoOutput(true);
 
-//            TODO serialize object in some way and create json
-//            dummy json
-            String jsonInputString = "{\"obj1\": \"Upendra\", \"obj2\": \"Programmer\"}";
+            // TODO serialize object in some way and create json
+            // dummy json
+            String jsonInputString = "{\"dom1\": \"" + this_dom + "\",
+                                       \"dom2\": \"" + that_dom + "\"}";
 
             try(OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
@@ -69,22 +70,21 @@ public class Word2VecEmbeddingStateVertexImpl extends StateVertexImpl {
             }
 
             BufferedReader reader =  new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuffer responseConent = new StringBuffer();
+            StringBuffer responseContent = new StringBuffer();
             String line;
-
 
             int status = connection.getResponseCode();
 
             if (status == 200){
                 while ((line = reader.readLine()) != null){
-                    responseConent.append(line);
+                    responseContent.append(line);
                 }
                 reader.close();
             }
 
-            boolean result = responseConent.toString().equals("true");
+            boolean result = responseContent.toString().equals("true");
 
-            System.out.println("Result is "+ result);
+            System.out.println("Result is " + result);
             return result;
 
         } catch (IOException e){

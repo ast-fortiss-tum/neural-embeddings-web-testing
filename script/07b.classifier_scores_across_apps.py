@@ -21,13 +21,15 @@ if __name__ == '__main__':
     Classifiers tested on 1 apps in SS (or 8 apps)
     '''
 
-    OUTPUT_CSV = True
+    OUTPUT_CSV = False
     SAVE_MODELS = True
     filename = ''
 
-    embedding_type = ['content', 'tags', 'content_tags', 'all', 'DOM_RTED', 'VISUAL_Hyst']
+    # embedding_type = ['content', 'tags', 'content_tags', 'all', 'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff']
+    embedding_type = ['content', 'tags', 'content_tags', 'all', ]
 
-    apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
+    # apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
+    apps = ['mrbs']
 
     for app in apps:
         start_time = datetime.now()
@@ -51,20 +53,20 @@ if __name__ == '__main__':
             names = [
                 # "Dummy",
                 # "Threshold",
-                "Nearest Neighbors",
+                # "Nearest Neighbors",
                 "SVM RBF",
                 "Decision Tree",
                 "Gaussian Naive Bayes",
                 "Random Forest",
                 "Ensemble",
                 "Neural Network",
-                "XGBoost"
+                # "XGBoost"
             ]
 
             classifiers = [
                 # DummyClassifier(strategy="stratified"),
                 # "Threshold",
-                KNeighborsClassifier(),
+                # KNeighborsClassifier(),
                 SVC(),
                 DecisionTreeClassifier(),
                 GaussianNB(),
@@ -75,12 +77,12 @@ if __name__ == '__main__':
                                              ('gnb', GaussianNB()),
                                              ('rf', RandomForestClassifier())]),
                 MLPClassifier(max_iter=1000),
-                GradientBoostingClassifier(n_estimators=100, max_depth=1)
+                # GradientBoostingClassifier(n_estimators=100, max_depth=1)
             ]
 
             for name, model in zip(names, classifiers):
 
-                if emb in {'DOM_RTED', 'VISUAL_Hyst'}:
+                if emb in {'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff'}:
                     feature = emb
                 else:
                     feature = 'doc2vec_distance_' + emb
@@ -167,12 +169,12 @@ if __name__ == '__main__':
 
                 # save the classifier
                 if SAVE_MODELS:
-                    filename = '../trained_classifiers/across-apps-' + app + '-' + \
-                               name.replace(" ", "-").replace("_", "-").lower() + \
-                               '-' + \
-                               feature.replace(" ", "-").replace("_", "-").lower() + \
-                               '.sav'
-                    pickle.dump(model, open(filename, 'wb'))
+                    classifier_path = '../trained_classifiers/across-apps-' + app + '-' + \
+                                      name.replace(" ", "-").replace("_", "-").lower() + \
+                                      '-' + \
+                                      feature.replace(" ", "-").replace("_", "-").lower() + \
+                                      '.sav'
+                    pickle.dump(model, open(classifier_path, 'wb'))
 
                 # predict the scores
                 y_pred = model.predict(X_test)
@@ -184,45 +186,45 @@ if __name__ == '__main__':
                 precision = precision_score(y_test, y_pred)
                 recall = recall_score(y_test, y_pred)
 
-            print(f'{name}, '
-                  f'accuracy: {accuracy}, '
-                  f'precision: {precision}, '
-                  f'recall: {recall}, '
-                  f'f1_0: {f1_0}, '
-                  f'f1_1: {f1_1}')
+                print(f'{name}, '
+                      f'accuracy: {accuracy}, '
+                      f'precision: {precision}, '
+                      f'recall: {recall}, '
+                      f'f1_0: {f1_0}, '
+                      f'f1_1: {f1_1}')
+
+                if OUTPUT_CSV:
+                    a = ''
+                    if emb == 'content':
+                        a = 'Content only'
+                    elif emb == 'tags':
+                        a = 'Tags only'
+                    elif emb == 'content_tags':
+                        a = 'Content and tags'
+                    elif emb == 'all':
+                        a = "Ensemble"
+                    elif emb == 'DOM_RTED':
+                        a = 'DOM_RTED'
+                    elif emb == 'VISUAL_Hyst':
+                        a = 'VISUAL_Hyst'
+                    else:
+                        print('nope')
+
+                    d1 = pd.DataFrame(
+                        {'App': app,
+                         'Model': ['DS_' + emb + '_' + 'modelsize100' + 'epoch31'],
+                         'Embedding': [a],
+                         'Classifier': [name],
+                         'Accuracy': [accuracy],
+                         'Precision': [precision],
+                         'Recall': [recall],
+                         'F1_0': [f1_0],
+                         'F1_1': [f1_1]})
+
+                    comparison_df = pd.concat([comparison_df, d1])
 
             if OUTPUT_CSV:
-                a = ''
-                if emb == 'content':
-                    a = 'Content only'
-                elif emb == 'tags':
-                    a = 'Tags only'
-                elif emb == 'content_tags':
-                    a = 'Content and tags'
-                elif emb == 'all':
-                    a = "Ensemble"
-                elif emb == 'DOM_RTED':
-                    a = 'DOM_RTED'
-                elif emb == 'VISUAL_Hyst':
-                    a = 'VISUAL_Hyst'
-                else:
-                    print('nope')
-
-                d1 = pd.DataFrame(
-                    {'App': app,
-                     'Model': ['DS_' + emb + '_' + 'modelsize100' + 'epoch31'],
-                     'Embedding': [a],
-                     'Classifier': [name],
-                     'Accuracy': [accuracy],
-                     'Precision': [precision],
-                     'Recall': [recall],
-                     'F1_0': [f1_0],
-                     'F1_1': [f1_1]})
-
-                comparison_df = pd.concat([comparison_df, d1])
-
-        if OUTPUT_CSV:
-            comparison_df.to_csv(filename, index=False)
+                comparison_df.to_csv(filename, index=False)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))

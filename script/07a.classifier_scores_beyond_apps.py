@@ -21,7 +21,7 @@ if __name__ == '__main__':
     Classifiers tested on SS
     '''
 
-    OUTPUT_CSV = False
+    OUTPUT_CSV = True
     SAVE_MODELS = True
     filename = '../csv_results_table/rq1-beyond-apps.csv'
 
@@ -31,13 +31,13 @@ if __name__ == '__main__':
     # load SS (all apps)
     df_ss = pd.read_csv('SS_threshold_set.csv')
 
-    embedding_type = ['all', 'content', 'tags', 'content_tags', 'DOM_RTED', 'VISUAL_Hyst']
+    embedding_type = ['all', 'content', 'tags', 'content_tags', 'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff']
 
     if OUTPUT_CSV:
         # create csv file to store the results
-        if not os.path.exists(filename):
+        if not os.path.exists(classifier_path):
             header = ['Setting', 'Model', 'Embedding', 'Classifier', 'Accuracy', 'Precision', 'Recall', 'F1_0', 'F1_1']
-            with open(filename, 'w', encoding='UTF8') as f:
+            with open(classifier_path, 'w', encoding='UTF8') as f:
                 writer = csv.writer(f)
                 # write the header
                 writer.writerow(header)
@@ -47,41 +47,41 @@ if __name__ == '__main__':
 
         comparison_df = None
         if OUTPUT_CSV:
-            comparison_df = pd.read_csv(filename)
+            comparison_df = pd.read_csv(classifier_path)
 
         names = [
             # "Dummy",
             # "Threshold",
-            "Nearest Neighbors",
-            "SVM RBF",
-            "Decision Tree",
-            "Gaussian Naive Bayes",
-            "Random Forest",
-            "Ensemble",
-            "Neural Network",
+            # "Nearest Neighbors",
+            # "SVM RBF",
+            # "Decision Tree",
+            # "Gaussian Naive Bayes",
+            # "Random Forest",
+            # "Ensemble",
+            # "Neural Network",
             "XGBoost"
         ]
 
         classifiers = [
             # DummyClassifier(strategy="stratified"),
             # "Threshold",
-            KNeighborsClassifier(),
-            SVC(),
-            DecisionTreeClassifier(),
-            GaussianNB(),
-            RandomForestClassifier(),
-            VotingClassifier(estimators=[('knn', KNeighborsClassifier()),
-                                         ('svm', SVC()),
-                                         ('dt', DecisionTreeClassifier()),
-                                         ('gnb', GaussianNB()),
-                                         ('rf', RandomForestClassifier())]),
-            MLPClassifier(max_iter=1000),
+            # KNeighborsClassifier(),
+            # SVC(),
+            # DecisionTreeClassifier(),
+            # GaussianNB(),
+            # RandomForestClassifier(),
+            # VotingClassifier(estimators=[('knn', KNeighborsClassifier()),
+            #                              ('svm', SVC()),
+            #                              ('dt', DecisionTreeClassifier()),
+            #                              ('gnb', GaussianNB()),
+            #                              ('rf', RandomForestClassifier())]),
+            # MLPClassifier(max_iter=1000),
             GradientBoostingClassifier(n_estimators=100, max_depth=1)
         ]
 
         for name, model in zip(names, classifiers):
 
-            if emb in {'DOM_RTED', 'VISUAL_Hyst'}:
+            if emb in {'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff'}:
                 feature = emb
             else:
                 feature = 'doc2vec_distance_' + emb
@@ -160,12 +160,14 @@ if __name__ == '__main__':
 
                 # save the classifier
                 if SAVE_MODELS:
-                    filename = '../trained_classifiers/' + \
-                               name.replace(" ", "-").replace("_", "-").lower() + \
+                    classifier_path = '../trained_classifiers/beyond-apps-' + \
+                                      name.replace(" ", "-").replace("_", "-").lower() + \
                                '-' + \
-                               feature.replace(" ", "-").replace("_", "-").lower() + \
+                                      feature.replace(" ", "-").replace("_", "-").lower() + \
                                '.sav'
-                    pickle.dump(model, open(filename, 'wb'))
+                    pickle.dump(model, open(classifier_path, 'wb'))
+                    # another = pickle.load(open(filename, 'rb'))
+                    # print()
 
                 # predict the scores
                 y_pred = model.predict(X_test)

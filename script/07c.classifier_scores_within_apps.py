@@ -5,7 +5,9 @@ import pickle
 import numpy as np
 import pandas as pd
 from sklearn.dummy import DummyClassifier
-from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier, GradientBoostingClassifier, AdaBoostClassifier, \
+    BaggingClassifier, ExtraTreesClassifier, StackingClassifier, HistGradientBoostingClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
@@ -23,11 +25,14 @@ if __name__ == '__main__':
     '''
 
     OUTPUT_CSV = False
-    SAVE_MODELS = False
+    SAVE_MODELS = True
 
-    embedding_type = ['content', 'tags', 'content_tags', 'all', 'DOM_RTED', 'VISUAL_Hyst']
+    # embedding_type = ['content', 'tags', 'content_tags', 'all', 'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff']
 
-    apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
+    # apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
+
+    apps = ['dimeshift']
+    embedding_type = ['DOM_RTED']
 
     # create csv file to store the results
     if not os.path.exists(r'../csv_results_table/rq1-within-apps.csv'):
@@ -48,34 +53,33 @@ if __name__ == '__main__':
             names = [
                 # "Dummy",
                 # "Threshold",
-                "Nearest Neighbors",
-                "SVM RBF",
-                "Decision Tree",
-                "Gaussian Naive Bayes",
-                "Random Forest",
-                "Ensemble",
-                "Neural Network"
+                # "SVM RBF",
+                # "Decision Tree",
+                # "Gaussian Naive Bayes",
+                # "Random Forest",
+                # "Ensemble",
+                # "Neural Network",
             ]
 
             classifiers = [
                 # DummyClassifier(strategy="stratified"),
                 # "Threshold",
-                KNeighborsClassifier(),
-                SVC(),
-                DecisionTreeClassifier(),
-                GaussianNB(),
-                RandomForestClassifier(),
-                VotingClassifier(estimators=[('knn', KNeighborsClassifier()),
-                                             ('svm', SVC()),
-                                             ('dt', DecisionTreeClassifier()),
-                                             ('gnb', GaussianNB()),
-                                             ('rf', RandomForestClassifier())]),
-                MLPClassifier(max_iter=1000)
+                # KNeighborsClassifier(),
+                # SVC(),
+                # DecisionTreeClassifier(),
+                # GaussianNB(),
+                # RandomForestClassifier(),
+                # VotingClassifier(estimators=[('knn', KNeighborsClassifier()),
+                #                              ('svm', SVC()),
+                #                              ('dt', DecisionTreeClassifier()),
+                #                              ('gnb', GaussianNB()),
+                #                              ('rf', RandomForestClassifier())]),
+                # MLPClassifier(max_iter=3),
             ]
 
             for name, model in zip(names, classifiers):
 
-                if emb in {'DOM_RTED', 'VISUAL_Hyst'}:
+                if emb in {'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff'}:
                     feature = emb
                 else:
                     feature = 'doc2vec_distance_' + emb
@@ -150,12 +154,12 @@ if __name__ == '__main__':
 
                     # save the classifier
                     if SAVE_MODELS:
-                        filename = '../trained_classifiers/within-apps-' + app + '-' + \
-                                   name.replace(" ", "-").replace("_", "-").lower() + \
-                                   '-' + \
-                                   feature.replace(" ", "-").replace("_", "-").lower() + \
-                                   '.sav'
-                        pickle.dump(model, open(filename, 'wb'))
+                        classifier_path = '../trained_classifiers/within-apps-' + app + '-' + \
+                                          name.replace(" ", "-").replace("_", "-").lower() + \
+                                          '-' + \
+                                          feature.replace(" ", "-").replace("_", "-").lower() + \
+                                          '.sav'
+                        pickle.dump(model, open(classifier_path, 'wb'))
 
                     # predict the scores
                     y_pred = model.predict(X_test)
@@ -187,6 +191,8 @@ if __name__ == '__main__':
                     a = 'DOM_RTED'
                 elif emb == 'VISUAL_Hyst':
                     a = 'VISUAL_Hyst'
+                elif emb == 'VISUAL_PDiff':
+                    a = 'VISUAL_PDiff'
                 else:
                     print('nope')
 

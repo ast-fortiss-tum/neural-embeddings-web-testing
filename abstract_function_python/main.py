@@ -21,8 +21,6 @@ CLASSIFIER = 'svm-rbf-'
 FEATURE = 'doc2vec-distance-all'
 EXT = '.sav'
 
-# across-apps-petclinic-svm-rbf-doc2vec-distance-all.sav
-
 CLASSIFIER_USED = CLASSIFIER_PATH + SETTING + CLASSIFIER + FEATURE + EXT
 
 print('DOC2VEC FEATURE = %s' % FEATURE)

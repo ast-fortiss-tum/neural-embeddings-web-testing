@@ -134,3 +134,4 @@ app_results/.DS_Store
 csv_results_table/*
 trained_classifiers/
 trained_model/
+SS_as_distance_matrix.csv

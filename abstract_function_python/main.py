@@ -11,15 +11,17 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 
-doc2vec_model_content_tags = Doc2Vec.load('trained_model/DS_content_tags_modelsize100epoch31.doc2vec.model')
-doc2vec_model_content = Doc2Vec.load('trained_model/DS_content_modelsize100epoch31.doc2vec.model')
-doc2vec_model_tags = Doc2Vec.load('trained_model/DS_tags_modelsize100epoch31.doc2vec.model')
+doc2vec_model_content_tags = Doc2Vec.load('../trained_model/DS_content_tags_modelsize100epoch31.doc2vec.model')
+doc2vec_model_content = Doc2Vec.load('../trained_model/DS_content_modelsize100epoch31.doc2vec.model')
+doc2vec_model_tags = Doc2Vec.load('../trained_model/DS_tags_modelsize100epoch31.doc2vec.model')
 
-CLASSIFIER_PATH = 'trained_classifiers/'
-SETTING = "across-apps-addressbook-8020-"  # "beyond-apps-train-on-ds-"
-CLASSIFIER = 'svm-rbf-'  # ensemble-
-FEATURE = 'doc2vec-distance-all'  # 'doc2vec-distance-tags' 'doc2vec-distance-content' 'doc2vec-distance-content_tags' 'doc2vec-distance-all'
+CLASSIFIER_PATH = '../trained_classifiers/'
+SETTING = 'across-apps-petclinic-'
+CLASSIFIER = 'svm-rbf-'
+FEATURE = 'doc2vec-distance-all'
 EXT = '.sav'
+
+# across-apps-petclinic-svm-rbf-doc2vec-distance-all.sav
 
 CLASSIFIER_USED = CLASSIFIER_PATH + SETTING + CLASSIFIER + FEATURE + EXT
 
@@ -32,7 +34,7 @@ print('CLASSIFIER = %s' % CLASSIFIER_USED)
 @app.route('/', methods=('GET', 'POST'))
 def equal_route():
     content_type = request.headers.get('Content-Type')
-    if content_type == 'application/json':
+    if content_type == 'application/json' or content_type == 'application/json; utf-8':
         data = json.loads(request.data)
     else:
         return 'Content-Type not supported!'
@@ -44,16 +46,27 @@ def equal_route():
     obj2 = parametersJava['dom2']
 
     # compute equality of DOM objects
-    result = word2vec_equals(obj1, obj2)
+    result = doc2vec_equals(obj1, obj2)
 
     result = "true" if result[0] == 0 else "false"
+    # print(result)
 
-    # return true if the two objects are the same
+    # return true if the two objects are the clones/near-duplicates
     return result
 
 
+@app.errorhandler(500)
+def internal_error(error):
+    return "500 error"
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return "404 error", 404
+
+
 # abstraction function that computes similarity
-def word2vec_equals(obj1, obj2):
+def doc2vec_equals(obj1, obj2):
     dist = get_distance_from_embeddings(obj1, obj2, feature=FEATURE)
     dist = dist.reshape(1, -1)
 
@@ -161,4 +174,4 @@ def retrieve_abstraction_from_html(bs, corpus):
 
 
 if __name__ == "__main__":
-    equal_route().run()
+    app.run(debug=True)

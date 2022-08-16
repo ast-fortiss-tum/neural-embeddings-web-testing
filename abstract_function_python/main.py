@@ -16,15 +16,16 @@ doc2vec_model_content = Doc2Vec.load('../trained_model/DS_content_modelsize100ep
 doc2vec_model_tags = Doc2Vec.load('../trained_model/DS_tags_modelsize100epoch31.doc2vec.model')
 
 CLASSIFIER_PATH = '../trained_classifiers/'
-SETTING = 'across-apps-petclinic-'
-CLASSIFIER = 'svm-rbf-'
-FEATURE = 'doc2vec-distance-all'
-EXT = '.sav'
+CLASSIFIER_USED = CLASSIFIER_PATH + "within-apps-petclinic-gaussian-naive-bayes-doc2vec-distance-all.sav"
 
-CLASSIFIER_USED = CLASSIFIER_PATH + SETTING + CLASSIFIER + FEATURE + EXT
-
-print('DOC2VEC FEATURE = %s' % FEATURE)
 print('CLASSIFIER = %s' % CLASSIFIER_USED)
+
+model = None
+try:
+    model = pickle.load(open(CLASSIFIER_USED, 'rb'))
+except FileNotFoundError:
+    print("Cannot find classifier %s" % CLASSIFIER_USED)
+    exit()
 
 
 # call to route /equals executes equalRoute function
@@ -47,33 +48,27 @@ def equal_route():
     result = doc2vec_equals(obj1, obj2)
 
     result = "true" if result[0] == 0 else "false"
-    # print(result)
 
     # return true if the two objects are the clones/near-duplicates
     return result
 
 
-@app.errorhandler(500)
-def internal_error(error):
-    return "500 error"
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return "404 error", 404
-
-
 # abstraction function that computes similarity
 def doc2vec_equals(obj1, obj2):
+    FEATURE = None
+    if "doc2vec-distance-all" in CLASSIFIER_USED:
+        FEATURE = "doc2vec-distance-all"
+    elif "doc2vec-distance-content" in CLASSIFIER_USED:
+        FEATURE = "doc2vec-distance-content"
+    elif "doc2vec-distance-tags" in CLASSIFIER_USED:
+        FEATURE = "doc2vec-distance-tags"
+    elif "doc2vec-distance-content-tags" in CLASSIFIER_USED:
+        FEATURE = "doc2vec-distance-content-tags"
+    assert FEATURE is not None
+
     dist = get_distance_from_embeddings(obj1, obj2, feature=FEATURE)
     dist = dist.reshape(1, -1)
 
-    model = None
-    try:
-        model = pickle.load(open(CLASSIFIER_USED, 'rb'))
-    except FileNotFoundError:
-        print("Cannot find classifier %s" % CLASSIFIER_USED)
-        exit()
     word2vec = model.predict(dist)
     return word2vec
 
@@ -172,4 +167,4 @@ def retrieve_abstraction_from_html(bs, corpus):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

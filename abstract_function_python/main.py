@@ -156,7 +156,7 @@ def retrieve_abstraction_from_html(bs, corpus):
                 if type(c) == Comment:
                     continue
                 retrieve_abstraction_from_html(c, corpus)
-        except Exception as e:
+        except Exception:
             pass
         if bs_has_name and not bs_is_single_tag:
             corpus[1].append(f'</{bs.name}>')

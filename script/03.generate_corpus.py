@@ -1,5 +1,6 @@
 """
 This script extracts the tags, content, tags+content from the pages of all_html (data set DS + commoncrawl.org)
+=> corpus = ([content], [tags], [tags+content])
 """
 
 from concurrent.futures import process

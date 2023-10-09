@@ -69,6 +69,7 @@ def extract_path(first, second, soup):
     return "".join(path)
 
 # extracts contexts only of direct neighbor nodes (parent/childs)
+# todo: check correct functionality
 def extract_simple_contexts(soup):
     contexts = []
     for tag in soup.find_all():

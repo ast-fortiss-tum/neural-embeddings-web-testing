@@ -1,18 +1,17 @@
 import subprocess
+import sys
 
-# TODO: implement use of extract.py
 class Extractor:
-    def __init__(self, config, jar_path, max_path_length, max_path_width):
+    def __init__(self, config, max_path_length, max_path_width):
         self.config = config
         self.max_path_length = max_path_length
         self.max_path_width = max_path_width
-        self.jar_path = jar_path
 
-    # calls command to extract and then accesses the output where the context is already correctly structured(as described in the docs)
+    # calls command to extract and then accesses the output where the context is already correctly structured
     def extract_paths(self, path):
-        # todo execute ./HTMLExtractor/extract.py and get output
-        command = ['java', '-cp', self.jar_path, 'JavaExtractor.App', '--max_path_length',
-                   str(self.max_path_length), '--max_path_width', str(self.max_path_width), '--file', path, '--no_hash']
+        # command = ['java', '-cp', self.jar_path, 'JavaExtractor.App', '--max_path_length',
+        #            str(self.max_path_length), '--max_path_width', str(self.max_path_width), '--file', path, '--no_hash']
+        command = [sys.executable, 'HTMLExtractor/utils.py', '-file', path]
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         # output from the communicate call
         out, err = process.communicate()

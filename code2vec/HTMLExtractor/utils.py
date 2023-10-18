@@ -8,8 +8,9 @@ DOWN_SYMBOL = "_"
 
 #  class: Code2VecVocabs
 paths_vocab = [UP_SYMBOL, DOWN_SYMBOL, 'contains']
-tokens_vocab = ['p', 'a', 'button', 'form', 'img', 'section', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'div'] # => todo: text???, 3 categories: textual content, interactive elements, structural elements
-structural_tags = ['section', 'ul', 'ol'] #'head', 'body', 
+tokens_vocab = ['p', 'a', 'button', 'form', 'img', 'section', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'div']
+structural_tags = ['section', 'ul', 'ol'] #'head', 'body',
+ignored_tags = ['tspan', 'textpath', ] 
 
 
 def get_immediate_parents(tag):
@@ -21,14 +22,17 @@ def get_immediate_parents(tag):
 
 # @param: soup -> soup object of the html page
 # returns list the nodes of possible target labels
+# fix: only returns html tag
 def extract_target_labels(soup):
-    target_labels = []
-    for tag in soup.find_all():
-        if tag.name == 'div' and len(tag.find_all(recursive=False)) > 1:
-            target_labels.append(tag)
-        elif tag.name in structural_tags:
-            target_labels.append(tag)
-    return target_labels
+    # target_labels = []
+    # for tag in soup.find_all():
+    #     if tag.name == 'div' and len(tag.find_all(recursive=False)) > 1:
+    #         target_labels.append(tag)
+    #     elif tag.name in structural_tags:
+    #         target_labels.append(tag)
+    # return target_labels
+    return [soup.html]
+
 
 # extracts the path of 2 nodes in the html tree => eg. 'p^div^body^html'
 # @param: first -> the first node to extract the path from
@@ -86,11 +90,13 @@ def extract_path(first, second, soup):
 # @param: simple, default=False -> only extract contexts of direct neighbor nodes (parent/childs) of tags from vocabulary (=> path lenght = 1)
 # returns array of contexts (-> strings of the form: 'tag1,path,tag2')
 def extract_contexts(node, simple=False):
+    if node == None: return []
     contexts = []
     for tag in node.find_all():
         if tag.name in tokens_vocab:
             if len(tag.find_all()) > 0: # ensure that node is not leaf
                 for c in tag.find_all(recursive=not simple):
+                    if c.name in ignored_tags: continue
                     p = extract_path(tag, c, node)
                     if p in contexts: continue                    
                     contexts.append(f"{tag.name},{p},{c.name}")
@@ -98,9 +104,9 @@ def extract_contexts(node, simple=False):
                 p = extract_path(tag, tag.find_parent(), node)
                 if p in contexts: continue
                 contexts.append(f"{tag.name},{p},{tag.find_parent().name}")
-    if node.text and node.text != '\n':
-        text = re.sub(r'\s+', '_', str(node.text).replace('\n', '').replace('\t', ''))
-        if text != '': contexts.append(f"{tag.name},contains," + text)
+                if tag.text and tag.text != '\n':
+                    text = re.sub(r'\s+', '_', str(tag.text).replace('\n', '').replace('\t', '').replace(',', ''))
+                    if text != '': contexts.append(f"{tag.name},contains," + text)
     return contexts
 
 # prints rows as defined in the code2vec docs, -> final output for a row: 'target_label context1 context2 context3 ...'
@@ -108,9 +114,9 @@ def extract_contexts(node, simple=False):
 def print_examples(soup):
     target_labels = extract_target_labels(soup)
     for target_label in target_labels:
-        contexts = extract_contexts(target_label, simple=True)
-        print(f'{target_label.name}|{str(target_label.attrs).replace(" ", "")} {" ".join([con for con in contexts])}\n')    
-    # print(f"***Printed {len(target_labels)} examples for {soup.title.string}***") # TODO remove
+        contexts = extract_contexts(target_label, simple=False)
+        print(f'{target_label.name} {" ".join([con for con in contexts])}\n')    
+        # print(f'{target_label.name}|{str(target_label.attrs).replace(" ", "")} {" ".join([con for con in contexts])}\n')    # add attributes of target label to output
 
 # prints examples which are extracted from a single html file
 # @param: file -> path to html file    

@@ -2,13 +2,15 @@ from bs4 import BeautifulSoup
 import re
 from argparse import ArgumentParser
 import os
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 UP_SYMBOL = "^"
 DOWN_SYMBOL = "_"
 
 #  class: Code2VecVocabs
 paths_vocab = [UP_SYMBOL, DOWN_SYMBOL, 'contains']
-tokens_vocab = ['p', 'a', 'button', 'form', 'img', 'section', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'div']
+tokens_vocab = ['p', 'a', 'button', 'form', 'img', 'section', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'div', 'article']
 structural_tags = ['section', 'ul', 'ol'] #'head', 'body',
 ignored_tags = ['tspan', 'textpath', ] 
 
@@ -124,6 +126,18 @@ def extract(file):
     soup = BeautifulSoup(open(file), 'html.parser')
     print_examples(soup)
 
+# prints the cosine similarity
+# @param: contexts -> list of tupels of the form:(name, contexts) to compute the similarity for (each represents a different html site)
+def print_cosine_similarity(contexts):
+    names, representations = zip(*tuples)
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(representations)
+    cosine_similarities = cosine_similarity(tfidf_matrix)
+    for i in range(len(names)):
+        for j in range(i + 1, len(names)):
+            similarity = cosine_similarities[i][j]
+            print(f"Similarity between {names[i]} and {names[j]}: {similarity}")
+
 if __name__ == '__main__':
     parser = ArgumentParser()
     # parser.add_argument("-maxlen", "--max_path_length", dest="max_path_length", required=False, default=8)
@@ -137,4 +151,31 @@ if __name__ == '__main__':
     # elif args.dir is not None:
     #     for file in os.listdir(args.dir):
     #         extract(os.path.join(args.dir, file))
+
+    with open('code2vec/data/extractor_results.txt', 'r') as f:
+        print(f.readline())
+        original = f.readline()
+        print(f.readline())
+        deleted_clone = f.readline()
+        print(f.readline())
+        added_clone = f.readline()
+        print(f.readline())
+        altered_text_clone = f.readline()
+        print(f.readline())
+        reshuffle_clone = f.readline()
+        print(f.readline())
+        distinct_page = f.readline()
+    tuples = [('original', original),
+            ('distinct_page', distinct_page),
+            ('deleted_clone', deleted_clone),
+            ('added_clone', added_clone),
+            ('altered_text_clone', altered_text_clone),
+            ('reshuffle_clone', reshuffle_clone)
+            ]
+    print_cosine_similarity(tuples)
+            
+
+            
+
+        
 

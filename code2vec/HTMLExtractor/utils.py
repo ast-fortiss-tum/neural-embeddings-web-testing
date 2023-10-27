@@ -122,9 +122,14 @@ def print_examples(soup):
 
 # prints examples which are extracted from a single html file
 # @param: file -> path to html file    
-def extract(file):
-    soup = BeautifulSoup(open(file), 'html.parser')
-    print_examples(soup)
+def extract(file, soup=None):
+    if soup == None:
+        print(f"Extracting from File: {file}")
+        soup = BeautifulSoup(open(file), 'html.parser')
+        print_examples(soup)
+    else:
+        print(f"Extracting from soup-object")
+        print_examples(soup)
 
 # prints the cosine similarity
 # @param: contexts -> list of tupels of the form:(name, contexts) to compute the similarity for (each represents a different html site)
@@ -137,6 +142,7 @@ def print_cosine_similarity(contexts):
         for j in range(i + 1, len(names)):
             similarity = cosine_similarities[i][j]
             print(f"Similarity between {names[i]} and {names[j]}: {similarity}")
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()

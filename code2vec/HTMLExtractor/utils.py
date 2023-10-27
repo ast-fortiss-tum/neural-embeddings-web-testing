@@ -133,11 +133,19 @@ def extract(file, soup=None):
 
 # prints the cosine similarity
 # @param: contexts -> list of tupels of the form:(name, contexts) to compute the similarity for (each represents a different html site)
-def print_cosine_similarity(contexts):
-    names, representations = zip(*tuples)
+def print_cosine_similarity(contexts, use_only_first_forcomp=False, add_comparisons=False):
+    if(add_comparisons):
+        contexts.append(('distinct_page(MDN_Blog)', " ".join([con for con in extract_contexts(BeautifulSoup(open('code2vec/resources/MDN_Blog.html'), 'html.parser'))])))
+        contexts.append(('diff_app_distinct_page(Wolfram_Alpha)', " ".join([con for con in extract_contexts(BeautifulSoup(open('code2vec/resources/Wolfram_Alpha.html'), 'html.parser'))])))
+    names, representations = zip(*contexts)
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform(representations)
     cosine_similarities = cosine_similarity(tfidf_matrix)
+    if(use_only_first_forcomp):
+        for j in range(0 + 1, len(names)):
+            similarity = cosine_similarities[0][j]
+            print(f"Similarity between {names[0]} and {names[j]}: {similarity}")
+        return
     for i in range(len(names)):
         for j in range(i + 1, len(names)):
             similarity = cosine_similarities[i][j]

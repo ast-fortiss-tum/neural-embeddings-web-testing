@@ -10,8 +10,9 @@ import string
 sys.path.append('code2vec/HTMLExtractor')
 from utils import extract_contexts, print_cosine_similarity
 
-container_tags = ['div', 'article', 'section', 'ul', 'ol']
+container_tags = ['div', 'article', 'section', 'ul', 'ol', 'div', 'div', 'div', 'div', 'div']
 text_tags = ['p', 'a', 'button', 'form', 'img', 'h1', 'h2', 'h3']
+number_of_childs = 3
 
 # util methods
 # @param: soup -> BeautifulSoup object of the html file
@@ -29,20 +30,37 @@ def generate_numberofdesc_tag_dict(soup):
     return tag_dict, sorted_keys
 
 # function to geneate html 
-# @param: number_of_elements -> number of elements to generate
 # @param: depth -> depth of the generated html
 # @return: elment _> parent element of the created html
-def generate_html(number_of_elements, depth, is_list=False):
-    if number_of_elements <= 0 or depth < 0: print("Invalid number of elements/depth\n");return None
-    if number_of_elements == 1:
+def generate_html(depth, is_list=False, initial=False):
+    if depth <= 0: print("Invalid depth");return None
+    if depth == 1:
         new_tag = Tag(name=random.choice(text_tags))
         new_tag.string = ''.join(random.choice(string.ascii_lowercase) for _ in range(10))
         return new_tag
     else:
+        if initial:
+            new_tag = random.choice(['div', 'article', 'section'])
+            tag = Tag(name=new_tag)
+            for _ in range(random.randint(number_of_childs - 1, number_of_childs)):
+                child = generate_html(depth-1)
+                tag.append(child)
+            return tag 
+        if is_list:
+            new_tag = Tag(name=random.choice(['ul', 'ol']))
+            for _ in range(random.randint(number_of_childs - 1, number_of_childs)):
+                li = Tag(name='li')
+                li.append(generate_html(depth-1))
+                new_tag.append(li)
+            return new_tag
         new_tag = random.choice(container_tags)
-        
-
-        return new_tag
+        if new_tag == 'ul' or new_tag == 'ol':
+            return generate_html(depth, is_list=True)
+        tag = Tag(name=new_tag)
+        for _ in range(random.randint(number_of_childs - 1, number_of_childs)):
+            child = generate_html(depth-1)
+            tag.append(child)
+        return tag 
     
 
 
@@ -68,8 +86,11 @@ def generate_delete_structure_clone(no_desc_taglist_dict, keys, intensity, num_e
 
 def generate_add_structure_clone(no_desc_taglist_dict, keys, intensity):
     if intensity == 0: return
-    
-    pass
+    if(len(keys) < 2): print("Error while trying to generate Add-Structure Clone");return
+
+    random.choice(no_desc_taglist_dict[random.choice((keys[1:]))]).append(generate_html(round(intensity*10), initial=True))
+    print(f"Total elements: {len(no_desc_taglist_dict[keys[-1]][0].find_all())}")
+
 
 def generate_alter_text_clone():
     pass
@@ -99,9 +120,20 @@ def test_extractor_deleted_clones(filepath):
         tupels.append((f'deleted_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
     print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
 
-#TODO: implement the other clones
+#TODO: implement the clone generation
 def test_extractor_added_clones(filepath):
-    pass
+    soup = BeautifulSoup(open(filepath), 'html.parser')
+    original_contexts = extract_contexts(soup)
+    tupels =[('original', " ".join(con for con in original_contexts)),]
+    for i in range(0,21, 1):
+        soup_intens = BeautifulSoup(open(filepath), 'html.parser')
+        intensity = (i * 0.5) / 10
+        no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup_intens)
+        generate_add_structure_clone(no_desc_taglist_dict, keys, intensity)
+        mutated_contexts = extract_contexts(soup_intens)
+        tupels.append((f'added_clone{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
+    print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
+
 
 def test_extractor_altered_text_clones(filepath):
     pass
@@ -129,6 +161,12 @@ soup = BeautifulSoup(html_content, 'html.parser')
 # Create a new <div> element
 # Find the <body> tag and append the new <div> element to it
 body_tag = soup.body
-body_tag.append(generate_html(1, 1))
-# Print the modified HTML content
-print(soup.prettify())
+# body_tag.append(generate_html(10, initial=True))
+# print(soup.prettify())
+# print(len(body_tag.find_all()))
+soup = BeautifulSoup(open('code2vec/resources/MDN_webdocs.html'), 'html.parser')
+elmens_before = len(soup.find_all())
+intensity = 0.5
+no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup)
+generate_add_structure_clone(no_desc_taglist_dict, keys, intensity)
+print(f"Total elements before: {elmens_before}")

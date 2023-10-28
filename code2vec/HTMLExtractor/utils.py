@@ -133,6 +133,8 @@ def extract(file, soup=None):
 
 # prints the cosine similarity
 # @param: contexts -> list of tupels of the form:(name, contexts) to compute the similarity for (each represents a different html site)
+# @param: use_only_first_forcomp, default=False -> only compute the similarity between the first element of the list and all other elements
+# @param: add_comparisons, default=False -> add comparisons (same app distinct page, diff app distinct page) to the list of contexts => atm hardcoded MDN Blog and Wolfram Alphas
 def print_cosine_similarity(contexts, use_only_first_forcomp=False, add_comparisons=False):
     if(add_comparisons):
         contexts.append(('distinct_page(MDN_Blog)', " ".join([con for con in extract_contexts(BeautifulSoup(open('code2vec/resources/MDN_Blog.html'), 'html.parser'))])))

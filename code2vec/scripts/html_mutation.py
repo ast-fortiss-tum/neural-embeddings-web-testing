@@ -1,7 +1,7 @@
 
 # this script should test wheter the extractor for html pages is sufficiently robust to detect clones -> needed for representation mechanism of the code2vec model
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag, NavigableString
 import random
 from math import log
 import os
@@ -13,6 +13,10 @@ from utils import extract_contexts, print_cosine_similarity
 container_tags = ['div', 'article', 'section', 'ul', 'ol', 'div', 'div', 'div', 'div', 'div']
 text_tags = ['p', 'a', 'button', 'form', 'img', 'h1', 'h2', 'h3']
 number_of_childs = 3
+
+STEP_LENGTH = 0.1
+GENERATED_TEXT_MIN_LENGTH = 3
+GENERATED_TEXT_MAX_LENGTH = 20
 
 # util methods
 # @param: soup -> BeautifulSoup object of the html file
@@ -31,12 +35,12 @@ def generate_numberofdesc_tag_dict(soup):
 
 # function to geneate html 
 # @param: depth -> depth of the generated html
-# @return: elment _> parent element of the created html
+# @return: elment -> parent element of the created html
 def generate_html(depth, is_list=False, initial=False):
-    if depth <= 0: print("Invalid depth");return None
+    if depth <= 0: print(f"Invalid depth: {depth}, no html added");return None
     if depth == 1:
         new_tag = Tag(name=random.choice(text_tags))
-        new_tag.string = ''.join(random.choice(string.ascii_lowercase) for _ in range(10))
+        new_tag.string = ''.join(random.choice(string.ascii_lowercase) for _ in range(GENERATED_TEXT_MIN_LENGTH, GENERATED_TEXT_MAX_LENGTH))
         return new_tag
     else:
         if initial:
@@ -62,7 +66,13 @@ def generate_html(depth, is_list=False, initial=False):
             tag.append(child)
         return tag 
     
+# @param: list -> list object to swap its li childs
+def swap_list_elements(list):
+    pass
 
+# @param: tag -> tag object to swap its childs
+def randomly_swap_childs(tag):
+    pass
 
 
 # operations to generate the different clones
@@ -88,17 +98,28 @@ def generate_add_structure_clone(no_desc_taglist_dict, keys, intensity):
     if intensity == 0: return
     if(len(keys) < 2): print("Error while trying to generate Add-Structure Clone");return
 
-    random.choice(no_desc_taglist_dict[random.choice((keys[1:]))]).append(generate_html(round(intensity*10), initial=True))
+    new_hmtl = generate_html(round(intensity*10), initial=True)
+    if(not new_hmtl):return
+    random.choice(no_desc_taglist_dict[random.choice((keys[1:]))]).append(new_hmtl)
     print(f"Total elements: {len(no_desc_taglist_dict[keys[-1]][0].find_all())}")
 
 
-def generate_alter_text_clone():
-    pass
+#TODO: texts seem to not make a difference?
+def generate_alter_text_clone(soup, intensity):
+    if intensity == 0: return
+    all_text_tags = list(soup.find_all(text_tags))
+    for element in all_text_tags:
+        if not element.string: continue
+        if random.random() < intensity:
+            element.string=NavigableString(''.join(random.choice(string.ascii_letters) for _ in range(random.randint(GENERATED_TEXT_MIN_LENGTH, GENERATED_TEXT_MAX_LENGTH))))
+            c+=1
+
+
 
 def generate_reshuffle_clone():
     pass
 
-# todo: implement, maybe in utlis.py?
+# todo: REFACOTR THIS,ONLY 1 FUNCTION NEEDED
 # steps: => (the same for all clones) 
 #   1. create a clone with an intensity
 #   2. extract the paths, extract(soup=soup)
@@ -111,32 +132,47 @@ def test_extractor_deleted_clones(filepath):
     original_contexts = extract_contexts(soup)
     tupels =[('original', " ".join(con for con in original_contexts)),]
 
-    for i in range(0,21, 1):
+    intensity = 0
+    while intensity <= 1-STEP_LENGTH:
         soup_intens = BeautifulSoup(open(filepath), 'html.parser')
-        intensity = (i * 0.5) / 10
         no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup_intens)
         generate_delete_structure_clone(no_desc_taglist_dict, keys, intensity)
         mutated_contexts = extract_contexts(soup_intens)
         tupels.append((f'deleted_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
+        intensity += STEP_LENGTH
     print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
 
-#TODO: implement the clone generation
 def test_extractor_added_clones(filepath):
     soup = BeautifulSoup(open(filepath), 'html.parser')
     original_contexts = extract_contexts(soup)
     tupels =[('original', " ".join(con for con in original_contexts)),]
-    for i in range(0,21, 1):
+
+    intensity=0
+    while intensity <= 1-STEP_LENGTH:
         soup_intens = BeautifulSoup(open(filepath), 'html.parser')
-        intensity = (i * 0.5) / 10
         no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup_intens)
         generate_add_structure_clone(no_desc_taglist_dict, keys, intensity)
         mutated_contexts = extract_contexts(soup_intens)
-        tupels.append((f'added_clone{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
+        tupels.append((f'added_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
+        intensity += STEP_LENGTH
+    print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
+
+# => seems like text has too little impact ...
+def test_extractor_altered_text_clones(filepath):
+    soup = BeautifulSoup(open(filepath), 'html.parser')
+    original_contexts = extract_contexts(soup)
+    tupels =[('original', " ".join(con for con in original_contexts)),]
+
+    intensity=0
+    while intensity <= 1-STEP_LENGTH:
+        soup_intens = BeautifulSoup(open(filepath), 'html.parser')
+        generate_alter_text_clone(soup, intensity)
+        mutated_contexts = extract_contexts(soup_intens)
+        tupels.append((f'altered_text_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
+        intensity += STEP_LENGTH
     print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
 
 
-def test_extractor_altered_text_clones(filepath):
-    pass
 
 def test_extractor_reshuffle_clones(filepath):
     pass
@@ -146,27 +182,36 @@ if __name__ == '__main__':
     # test_extractor_deleted_clones('code2vec/resources/MDN_webdocs.html')
 
     html_content = """
-<html>
-<head>
-    <title>Sample Page</title>
-</head>
-<body>
-    <h1>Hello, World!</h1>
-</body>
-</html>
-"""
+    <html>
+    <head>
+        <title>Sample Page</title>
+    </head>
+    <body>
+        <h1>Hello, World!</h1>
+        <div>
+            <p>>TEST</p>
+            <p>>TESTO</p>
+        </div>
+    </body>
+    </html>
+    """
 
-# Parse the HTML content using Beautiful Soup
-soup = BeautifulSoup(html_content, 'html.parser')
-# Create a new <div> element
-# Find the <body> tag and append the new <div> element to it
-body_tag = soup.body
-# body_tag.append(generate_html(10, initial=True))
-# print(soup.prettify())
-# print(len(body_tag.find_all()))
-soup = BeautifulSoup(open('code2vec/resources/MDN_webdocs.html'), 'html.parser')
-elmens_before = len(soup.find_all())
-intensity = 0.5
-no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup)
-generate_add_structure_clone(no_desc_taglist_dict, keys, intensity)
-print(f"Total elements before: {elmens_before}")
+    # Parse the HTML content using Beautiful Soup
+    # soup = BeautifulSoup(html_content, 'html.parser')
+    # body_tag = soup.body
+    # generate_alter_text_clone(body_tag, 0.5)
+    # print(soup.prettify())
+
+    test_extractor_altered_text_clones('code2vec/resources/MDN_webdocs.html')
+
+    # s = BeautifulSoup(open('code2vec/resources/MDN_webdocs.html'))
+    # generate_alter_text_clone(s, 1)
+    # print(extract_contexts(s))
+    # print(s.prettify())
+    
+    # soup = BeautifulSoup(open('code2vec/resources/MDN_webdocs.html'), 'html.parser')
+    # elmens_before = len(soup.find_all())
+    # intensity = 0.05
+    # no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup)
+    # generate_add_structure_clone(no_desc_taglist_dict, keys, intensity)
+    # print(f"Total elements before: {elmens_before}")

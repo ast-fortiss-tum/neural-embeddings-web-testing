@@ -8,7 +8,7 @@ import os
 import sys
 import string
 sys.path.append('code2vec/HTMLExtractor')
-from utils import extract_contexts, print_cosine_similarity
+from utils import extract_contexts, calculate_cosine_similarity
 
 container_tags = ['div', 'article', 'section', 'ul', 'ol', 'div', 'div', 'div', 'div', 'div']
 text_tags = ['p', 'a', 'button', 'form', 'img', 'h1', 'h2', 'h3']
@@ -87,7 +87,7 @@ def generate_delete_structure_clone(no_desc_taglist_dict, keys, intensity):
     ix = ix if ix < len(keys) else len(keys) - 1
     for i, key in enumerate(keys[:ix+1]):
         for element in no_desc_taglist_dict[key]:
-            if random.random() <= intensity:
+            if random.random() <= intensity and random.random()<= intensity:
                 elements_to_delete.append(element)
     for element in elements_to_delete:
         element.decompose()
@@ -102,8 +102,6 @@ def generate_add_structure_clone(no_desc_taglist_dict, keys, intensity):
     random.choice(no_desc_taglist_dict[random.choice((keys[1:]))]).append(new_hmtl)
     # print(f"Total elements: {len(no_desc_taglist_dict[keys[-1]][0].find_all())}")
 
-
-#TODO: texts seem to not make a difference?
 def generate_alter_text_clone(soup, intensity):
     if intensity == 0: return
     all_text_tags = list(soup.find_all(text_tags))
@@ -111,7 +109,6 @@ def generate_alter_text_clone(soup, intensity):
         if not element.string: continue
         if random.random() < intensity:
             element.string=NavigableString(''.join(random.choice(string.ascii_letters) for _ in range(random.randint(GENERATED_TEXT_MIN_LENGTH, GENERATED_TEXT_MAX_LENGTH))))
-
 
 def generate_reshuffle_clone(no_desc_taglist_dict, keys, intensity,):
     # print(f"Intensity: {intensity}")
@@ -123,75 +120,6 @@ def generate_reshuffle_clone(no_desc_taglist_dict, keys, intensity,):
         for element in no_desc_taglist_dict[key]:
             shuffle_childs(element)
 
-# todo: REFACOTR THIS,ONLY 1 FUNCTION NEEDED => DELETE THE OTHERS AFTER TESTING
-# steps: => (the same for all clones) 
-#   1. create a clone with an intensity
-#   2. extract the paths, extract(soup=soup)
-#   3. use print_cosinine_similarity to compute() the similarity between the original and the mutated html file
-#   4. look at similarity, at some point it should be very far away from the original => stop eventually
-#   5. increase the intensity and repeat step 1
-
-# def test_extractor_deleted_clones(filepath):
-#     soup = BeautifulSoup(open(filepath), 'html.parser')
-#     original_contexts = extract_contexts(soup)
-#     tupels =[('original', " ".join(con for con in original_contexts)),]
-
-#     intensity = 0
-#     while intensity <= 1-STEP_LENGTH:
-#         soup_intens = BeautifulSoup(open(filepath), 'html.parser')
-#         no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup_intens)
-#         generate_delete_structure_clone(no_desc_taglist_dict, keys, intensity)
-#         mutated_contexts = extract_contexts(soup_intens)
-#         tupels.append((f'deleted_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
-#         intensity += STEP_LENGTH
-#     print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
-
-# def test_extractor_added_clones(filepath):
-#     soup = BeautifulSoup(open(filepath), 'html.parser')
-#     original_contexts = extract_contexts(soup)
-#     tupels =[('original', " ".join(con for con in original_contexts)),]
-
-#     intensity=0
-#     while intensity <= 1-STEP_LENGTH:
-#         soup_intens = BeautifulSoup(open(filepath), 'html.parser')
-#         no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup_intens)
-#         generate_add_structure_clone(no_desc_taglist_dict, keys, intensity)
-#         mutated_contexts = extract_contexts(soup_intens)
-#         tupels.append((f'added_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
-#         intensity += STEP_LENGTH
-#     print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
-
-# # => seems like text has too little impact ...
-# def test_extractor_altered_text_clones(filepath):
-#     soup = BeautifulSoup(open(filepath), 'html.parser')
-#     original_contexts = extract_contexts(soup)
-#     tupels =[('original', " ".join(con for con in original_contexts)),]
-
-#     intensity=0
-#     while intensity <= 1-STEP_LENGTH:
-#         soup_intens = BeautifulSoup(open(filepath), 'html.parser')
-#         generate_alter_text_clone(soup, intensity)
-#         mutated_contexts = extract_contexts(soup_intens)
-#         tupels.append((f'altered_text_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
-#         intensity += STEP_LENGTH
-#     print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
-
-# def test_extractor_reshuffle_clones(filepath):
-#     soup = BeautifulSoup(open(filepath), 'html.parser')
-#     original_contexts = extract_contexts(soup)
-#     tupels =[('original', " ".join(con for con in original_contexts)),]
-
-#     intensity=0
-#     while intensity <= 1-STEP_LENGTH:
-#         soup_intens = BeautifulSoup(open(filepath), 'html.parser')
-#         no_desc_taglist_dict, keys = generate_numberofdesc_tag_dict(soup_intens)
-#         generate_reshuffle_clone(no_desc_taglist_dict, keys, intensity)
-#         mutated_contexts = extract_contexts(soup_intens)
-#         tupels.append((f'reshuffle_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
-#         intensity += STEP_LENGTH
-#     print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
-
-
 # function to test the extractor using clone generation functions
 # @param: filepath -> path to the html file
 # @param: delete -> bool, default=False -> test with delete clone
@@ -200,10 +128,10 @@ def generate_reshuffle_clone(no_desc_taglist_dict, keys, intensity,):
 # @param: reshuffle -> bool, default=False -> test with reshuffle clone
 def test_extractor_using_clone(filepath, delete=False, add=False, alter_text=False, reshuffle=False):
     conditions = [delete, add, alter_text, reshuffle]
-    if sum(conditions) != 1: print("Error: Invalid conditions for test_extractor_using_clones"); return
+    if sum(conditions) != 1: print("Error: Invalid conditions for test_extractor_using_clones, set only 1 to True"); return
     soup = BeautifulSoup(open(filepath), 'html.parser')
     original_contexts = extract_contexts(soup)
-    tupels =[('original', " ".join(con for con in original_contexts)),]
+    tupels =[(f'Original({os.path.basename(filepath)})', " ".join(con for con in original_contexts))]
     intensity=0
     while intensity <= 1-STEP_LENGTH:
         soup_intens = BeautifulSoup(open(filepath), 'html.parser')
@@ -217,27 +145,45 @@ def test_extractor_using_clone(filepath, delete=False, add=False, alter_text=Fal
             clone_generation_function(no_desc_taglist_dict, keys, intensity)
         mutated_contexts = extract_contexts(soup_intens)
         tupels.append((f'{clone_name}_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
+        print(calculate_cosine_similarity(tupels))
+        tupels.pop(1)
         intensity += STEP_LENGTH
-    print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
+    # print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
 
-# function to test the extractor using clone generation functions => prints out the cosine similarity between the original and the clones for every type of clone    
-def test_extractor_with_generating_clones(filepath):
+# function to test the extractor using clone generation functions => prints out the cosine similarity between the original and the clones for every type of clone
+# @param: filepath -> path to the html file
+# @param: comparison_filepaths -> list of paths to html files to compare the original with 
+def test_extractor_with_generating_clones(filepath, comparison_filepaths=None, delete=True, add=True, alter_text=True, reshuffle=True):
+    if comparison_filepaths:
+        print(f'Calculating representation similarity with comparisions...\n')
+        original_contexts = extract_contexts(BeautifulSoup(open(filepath), 'html.parser'))
+        tupels =[(f'original({os.path.basename(filepath)})', " ".join(con for con in original_contexts))]
+        for i, comparison_filepath in enumerate(comparison_filepaths):
+            comparison_contexts = extract_contexts(BeautifulSoup(open(comparison_filepath), 'html.parser'))
+            tupels.append((f"Comparision {i} ({os.path.basename(comparison_filepath)})", " ".join(con for con in comparison_contexts)))
+            print(calculate_cosine_similarity(tupels))
+            tupels.pop(1)
+        print('==========\n')
+
     print("Testing extractor with generating clones...\n")
-    print('[CLONE-TYPE: DELETED]')
-    test_extractor_using_clone(filepath, delete=True)
-    print('\n[CLONE-TYPE: ADDED]')
-    test_extractor_using_clone(filepath, add=True)
-    print('\n[CLONE-TYPE: ALTERED TEXT]')
-    test_extractor_using_clone(filepath, alter_text=True)
-    print('\n[CLONE-TYPE: RESHUFFLE]')
-    test_extractor_using_clone(filepath, reshuffle=True)
+    if(delete): 
+        print('[CLONE-TYPE: DELETED]')
+        test_extractor_using_clone(filepath, delete=True)
+    if add:
+        print('\n[CLONE-TYPE: ADDED]')
+        test_extractor_using_clone(filepath, add=True)
+    if alter_text:
+        print('\n[CLONE-TYPE: ALTERED TEXT]')
+        test_extractor_using_clone(filepath, alter_text=True)
+    if reshuffle:
+        print('\n[CLONE-TYPE: RESHUFFLE]')
+        test_extractor_using_clone(filepath, reshuffle=True)
     
 
 
 if __name__ == '__main__':
-    test_extractor_with_generating_clones('code2vec/resources/MDN_Blog.html')
-    # contexts = []
-    # contexts.append(('original', " ".join([con for con in extract_contexts(BeautifulSoup(open('code2vec/resources/MDN_webdocs.html'), 'html.parser'))])))
-    # contexts.append(('distinct_page(MDN_Blog)', " ".join([con for con in extract_contexts(BeautifulSoup(open('code2vec/resources/MDN_Blog.html'), 'html.parser'))])))
+    # print('MDN Webdocs')
+    # test_extractor_with_generating_clones('code2vec/resources/MDN_webdocs.html', comparison_filepaths=['code2vec/resources/MDN_Blog.html', 'code2vec/resources/Wolfram_Alpha.html'])
 
-    # print_cosine_similarity(contexts)
+    print('Github')
+    test_extractor_with_generating_clones('code2vec/resources/GitHub-Homepage.html', comparison_filepaths=['code2vec/resources/GitHub-Pricing.html', 'code2vec/resources/Wolfram_Alpha.html'])

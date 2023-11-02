@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer
 
 UP_SYMBOL = "^"
 DOWN_SYMBOL = "_"
@@ -131,27 +132,18 @@ def extract(file, soup=None):
         print(f"Extracting from soup-object")
         print_examples(soup)
 
-# prints the cosine similarity
-# @param: contexts -> list of tupels of the form:(name, contexts) to compute the similarity for (each represents a different html site)
-# @param: use_only_first_forcomp, default=False -> only compute the similarity between the first element of the list and all other elements
-# @param: add_comparisons, default=False -> add comparisons (same app distinct page, diff app distinct page) to the list of contexts => atm hardcoded MDN Blog and Wolfram Alphas
-def print_cosine_similarity(contexts, use_only_first_forcomp=False, add_comparisons=False):
-    if(add_comparisons):
-        contexts.append(('distinct_page(MDN_Blog)', " ".join([con for con in extract_contexts(BeautifulSoup(open('code2vec/resources/MDN_Blog.html'), 'html.parser'))])))
-        contexts.append(('diff_app_distinct_page(Wolfram_Alpha)', " ".join([con for con in extract_contexts(BeautifulSoup(open('code2vec/resources/Wolfram_Alpha.html'), 'html.parser'))])))
+# calcs the cosine similarity between 2 representations of html pages(contexts)
+# @param: contexts -> list of 2 tupels of the form:(name, contexts) to compute the similarity for (each represents a different html site)
+# returns the similarity as a string using the following format: 'Similarity between name1 and name2: similarity'
+def calculate_cosine_similarity(contexts):
+    if len(contexts) != 2: raise Exception(f"Expected 2 elements in contexts, but got {len(contexts)} elements")
     names, representations = zip(*contexts)
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(representations)
-    cosine_similarities = cosine_similarity(tfidf_matrix)
-    if(use_only_first_forcomp):
-        for j in range(0 + 1, len(names)):
-            similarity = cosine_similarities[0][j]
-            print(f"Similarity between {names[0]} and {names[j]}: {similarity}")
-        return
-    for i in range(len(names)):
-        for j in range(i + 1, len(names)):
-            similarity = cosine_similarities[i][j]
-            print(f"Similarity between {names[i]} and {names[j]}: {similarity}")
+    # vectorizer = TfidfVectorizer()
+    # tfidf_matrix = vectorizer.fit_transform(representations)
+    # cosine_sim = cosine_similarity(tfidf_matrix)
+    vectorizer = CountVectorizer().fit_transform(representations)
+    cosine_sim = cosine_similarity(vectorizer)
+    return f"Similarity between {names[0]} and {names[1]}: {cosine_sim[0][1]}"
 
 
 if __name__ == '__main__':
@@ -167,28 +159,6 @@ if __name__ == '__main__':
     # elif args.dir is not None:
     #     for file in os.listdir(args.dir):
     #         extract(os.path.join(args.dir, file))
-
-    with open('code2vec/data/extractor_results.txt', 'r') as f:
-        print(f.readline())
-        original = f.readline()
-        print(f.readline())
-        deleted_clone = f.readline()
-        print(f.readline())
-        added_clone = f.readline()
-        print(f.readline())
-        altered_text_clone = f.readline()
-        print(f.readline())
-        reshuffle_clone = f.readline()
-        print(f.readline())
-        distinct_page = f.readline()
-    tuples = [('original', original),
-            ('distinct_page', distinct_page),
-            ('deleted_clone', deleted_clone),
-            ('added_clone', added_clone),
-            ('altered_text_clone', altered_text_clone),
-            ('reshuffle_clone', reshuffle_clone)
-            ]
-    print_cosine_similarity(tuples)
             
 
             

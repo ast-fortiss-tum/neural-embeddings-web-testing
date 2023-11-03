@@ -9,6 +9,8 @@ import sys
 import string
 sys.path.append('code2vec/HTMLExtractor')
 from utils import extract_contexts, calculate_cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 container_tags = ['div', 'article', 'section', 'ul', 'ol', 'div', 'div', 'div', 'div', 'div']
 text_tags = ['p', 'a', 'button', 'form', 'img', 'h1', 'h2', 'h3']
@@ -147,8 +149,9 @@ def test_extractor_using_clone(filepath, delete=False, add=False, alter_text=Fal
         tupels.append((f'{clone_name}_clone_{int(intensity*100)}%', " ".join([con for con in mutated_contexts])))
         print(calculate_cosine_similarity(tupels))
         tupels.pop(1)
+        print(calculate_cosine_similarity_bare_html_representation(soup, soup_intens, f'Original({os.path.basename(filepath)})', f'{clone_name}_clone_{int(intensity*100)}%')) # add bare html for comparisions
+
         intensity += STEP_LENGTH
-    # print_cosine_similarity(tupels, use_only_first_forcomp=True, add_comparisons=True)
 
 # function to test the extractor using clone generation functions => prints out the cosine similarity between the original and the clones for every type of clone
 # @param: filepath -> path to the html file
@@ -181,7 +184,16 @@ def test_extractor_with_generating_clones(filepath, comparison_filepaths=None, d
     
 
 
-if __name__ == '__main__':
+# function to calculate the cosine similarity between 2 representations of html pages using tdidf
+def calculate_cosine_similarity_bare_html_representation(soup1, soup2, name1, name2):
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform([soup1.prettify(), soup2.prettify()])
+    cosine_similarities = cosine_similarity(tfidf_matrix)
+    return(f"Similarity between {name1} and {name2}: {round(cosine_similarities[0, 1], 4)} =>(bare html)")
+
+
+if __name__ == '__main__':    
+
     # print('MDN Webdocs')
     # test_extractor_with_generating_clones('code2vec/resources/MDN_webdocs.html', comparison_filepaths=['code2vec/resources/MDN_Blog.html', 'code2vec/resources/Wolfram_Alpha.html'])
 

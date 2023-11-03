@@ -143,7 +143,7 @@ def calculate_cosine_similarity(contexts):
     # cosine_sim = cosine_similarity(tfidf_matrix)
     vectorizer = CountVectorizer().fit_transform(representations)
     cosine_sim = cosine_similarity(vectorizer)
-    return f"Similarity between {names[0]} and {names[1]}: {cosine_sim[0][1]}"
+    return f"Similarity between {names[0]} and {names[1]}: {round(cosine_sim[0][1], 4)}"
 
 
 if __name__ == '__main__':

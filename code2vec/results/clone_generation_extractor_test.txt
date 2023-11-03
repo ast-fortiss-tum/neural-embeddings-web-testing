@@ -1,0 +1,317 @@
+#SECTION1: First Run:
+    ====> MDN-WEBDOCS:
+		Comparisions:
+			Calculating representation similarity with comparisions...
+
+			Similarity between original(MDN_webdocs.html) and Comparision 0 (MDN_Blog.html): 0.9768472778279266
+			Similarity between original(MDN_webdocs.html) and Comparision 1 (Wolfram_Alpha.html): 0.8477154846860278
+			==========
+
+			Testing extractor with generating clones...
+
+			[CLONE-TYPE: DELETED]
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_0%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_10%: 0.9999946539375022
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_20%: 0.9998440768928845
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_30%: 0.9997887528110561
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_40%: 0.9992514778693355
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_50%: 0.9986206682002462
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_60%: 0.9921657904119161
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_70%: 0.9795164011029724
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_80%: 0.9310907286885277
+			Similarity between Original(MDN_webdocs.html) and deleted_clone_89%: 0.866322822384191
+
+			[CLONE-TYPE: ADDED]
+			Similarity between Original(MDN_webdocs.html) and added_clone_0%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and added_clone_10%: 0.9999982439936573
+			Similarity between Original(MDN_webdocs.html) and added_clone_20%: 0.9999948114488628
+			Similarity between Original(MDN_webdocs.html) and added_clone_30%: 0.9999373175064084
+			Similarity between Original(MDN_webdocs.html) and added_clone_40%: 0.9989778892249326
+			Similarity between Original(MDN_webdocs.html) and added_clone_50%: 0.998703766999872
+			Similarity between Original(MDN_webdocs.html) and added_clone_60%: 0.9951588305768051
+			Similarity between Original(MDN_webdocs.html) and added_clone_70%: 0.9801641875260423
+			Similarity between Original(MDN_webdocs.html) and added_clone_80%: 0.9584860484773772
+			Similarity between Original(MDN_webdocs.html) and added_clone_89%: 0.9533810838588643
+
+			[CLONE-TYPE: ALTERED TEXT]
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_0%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_10%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_20%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_30%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_40%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_50%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_60%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_70%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_80%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and altered_text_clone_89%: 1.0000000000000013
+
+			[CLONE-TYPE: RESHUFFLE]
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_0%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_10%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_20%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_30%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_40%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_50%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_60%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_70%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_80%: 1.0000000000000013
+			Similarity between Original(MDN_webdocs.html) and reshuffle_clone_89%: 1.0000000000000013
+
+		
+		====> GITHUB:
+            Calculating representation similarity with comparisions...
+
+            Similarity between original(GitHub-Homepage.html) and Comparision 0 (GitHub-Pricing.html): 0.9679410653422106
+            Similarity between original(GitHub-Homepage.html) and Comparision 1 (Wolfram_Alpha.html): 0.8220107831659962
+            ==========
+
+            Testing extractor with generating clones...
+
+            [CLONE-TYPE: DELETED]
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_0%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_10%: 0.9999971033422557
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_20%: 0.9999394007486198
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_30%: 0.9994782482593954
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_40%: 0.999379367730245
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_50%: 0.9956922635831965
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_60%: 0.9948450464774223
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_70%: 0.9901327793884885
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_80%: 0.9765450440646185
+            Similarity between Original(GitHub-Homepage.html) and deleted_clone_89%: 0.9452925717241163
+
+            [CLONE-TYPE: ADDED]
+            Similarity between Original(GitHub-Homepage.html) and added_clone_0%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and added_clone_10%: 0.9999998283893867
+            Similarity between Original(GitHub-Homepage.html) and added_clone_20%: 0.9999972660185535
+            Similarity between Original(GitHub-Homepage.html) and added_clone_30%: 0.9999825057197461
+            Similarity between Original(GitHub-Homepage.html) and added_clone_40%: 0.9999958772586934
+            Similarity between Original(GitHub-Homepage.html) and added_clone_50%: 0.9991878816801116
+            Similarity between Original(GitHub-Homepage.html) and added_clone_60%: 0.9983464259657224
+            Similarity between Original(GitHub-Homepage.html) and added_clone_70%: 0.993020534283863
+            Similarity between Original(GitHub-Homepage.html) and added_clone_80%: 0.9777974044221908
+            Similarity between Original(GitHub-Homepage.html) and added_clone_89%: 0.9391304054960222
+
+            [CLONE-TYPE: ALTERED TEXT]
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_0%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_10%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_20%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_30%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_40%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_50%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_60%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_70%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_80%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and altered_text_clone_89%: 1.000000000000001
+
+            [CLONE-TYPE: RESHUFFLE]
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_0%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_10%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_20%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_30%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_40%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_50%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_60%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_70%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_80%: 1.000000000000001
+            Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_89%: 1.000000000000001
+
+
+
+
+
+
+
+#SECTION2: compare extractor results with bare html  - tdidf cosine similarity
+    ===> MDN Webdocs
+        Calculating representation similarity with comparisions...
+
+        Similarity between original(MDN_webdocs.html) and Comparision 0 (MDN_Blog.html): 0.9768
+        Similarity between original(MDN_webdocs.html) and Comparision 1 (Wolfram_Alpha.html): 0.8477
+        ==========
+
+        Testing extractor with generating clones...
+
+        [CLONE-TYPE: DELETED]
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_0%: 1.0
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_0%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_10%: 1.0
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_10%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_20%: 0.9998
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_20%: 0.9985 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_30%: 0.9998
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_30%: 0.998 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_40%: 0.9974
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_40%: 0.9858 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_50%: 0.9967
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_50%: 0.959 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_60%: 0.9908
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_60%: 0.8933 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_70%: 0.989
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_70%: 0.8404 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_80%: 0.9181
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_80%: 0.4808 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_89%: 0.9423
+        Similarity between Original(MDN_webdocs.html) and deleted_clone_89%: 0.4127 =>(bare html)
+
+        [CLONE-TYPE: ADDED]
+        Similarity between Original(MDN_webdocs.html) and added_clone_0%: 1.0
+        Similarity between Original(MDN_webdocs.html) and added_clone_0%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_10%: 1.0
+        Similarity between Original(MDN_webdocs.html) and added_clone_10%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_20%: 1.0
+        Similarity between Original(MDN_webdocs.html) and added_clone_20%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_30%: 1.0
+        Similarity between Original(MDN_webdocs.html) and added_clone_30%: 0.9999 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_40%: 0.9997
+        Similarity between Original(MDN_webdocs.html) and added_clone_40%: 0.9998 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_50%: 0.9957
+        Similarity between Original(MDN_webdocs.html) and added_clone_50%: 0.9965 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_60%: 0.9894
+        Similarity between Original(MDN_webdocs.html) and added_clone_60%: 0.9927 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_70%: 0.9545
+        Similarity between Original(MDN_webdocs.html) and added_clone_70%: 0.9334 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_80%: 0.977
+        Similarity between Original(MDN_webdocs.html) and added_clone_80%: 0.8206 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and added_clone_89%: 0.9576
+        Similarity between Original(MDN_webdocs.html) and added_clone_89%: 0.6579 =>(bare html)
+
+        [CLONE-TYPE: ALTERED TEXT]
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_0%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_0%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_10%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_10%: 0.9999 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_20%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_20%: 0.9993 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_30%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_30%: 0.9988 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_40%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_40%: 0.998 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_50%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_50%: 0.9977 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_60%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_60%: 0.9976 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_70%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_70%: 0.9976 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_80%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_80%: 0.9975 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_89%: 1.0
+        Similarity between Original(MDN_webdocs.html) and altered_text_clone_89%: 0.9975 =>(bare html)
+
+        [CLONE-TYPE: RESHUFFLE]
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_0%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_0%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_10%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_10%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_20%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_20%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_30%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_30%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_40%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_40%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_50%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_50%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_60%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_60%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_70%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_70%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_80%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_80%: 1.0 =>(bare html)
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_89%: 1.0
+        Similarity between Original(MDN_webdocs.html) and reshuffle_clone_89%: 1.0 =>(bare html)       
+
+    ===> GitHub
+        Calculating representation similarity with comparisions...
+
+        Similarity between original(GitHub-Homepage.html) and Comparision 0 (GitHub-Pricing.html): 0.9679
+        Similarity between original(GitHub-Homepage.html) and Comparision 1 (Wolfram_Alpha.html): 0.822
+        ==========
+
+        Testing extractor with generating clones...
+
+        [CLONE-TYPE: DELETED]
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_0%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_0%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_10%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_10%: 0.9998 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_20%: 0.9999
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_20%: 0.9984 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_30%: 0.9993
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_30%: 0.9947 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_40%: 0.9987
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_40%: 0.9812 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_50%: 0.9975
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_50%: 0.9504 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_60%: 0.9931
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_60%: 0.8893 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_70%: 0.972
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_70%: 0.7916 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_80%: 0.9576
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_80%: 0.6598 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_89%: 0.9557
+        Similarity between Original(GitHub-Homepage.html) and deleted_clone_89%: 0.5108 =>(bare html)
+
+        [CLONE-TYPE: ADDED]
+        Similarity between Original(GitHub-Homepage.html) and added_clone_0%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and added_clone_0%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_10%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and added_clone_10%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_20%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and added_clone_20%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_30%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and added_clone_30%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_40%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and added_clone_40%: 0.9999 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_50%: 0.999
+        Similarity between Original(GitHub-Homepage.html) and added_clone_50%: 0.9997 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_60%: 0.9979
+        Similarity between Original(GitHub-Homepage.html) and added_clone_60%: 0.9978 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_70%: 0.9977
+        Similarity between Original(GitHub-Homepage.html) and added_clone_70%: 0.9951 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_80%: 0.9846
+        Similarity between Original(GitHub-Homepage.html) and added_clone_80%: 0.9708 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and added_clone_89%: 0.9537
+        Similarity between Original(GitHub-Homepage.html) and added_clone_89%: 0.8972 =>(bare html)
+
+        [CLONE-TYPE: ALTERED TEXT]
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_0%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_0%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_10%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_10%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_20%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_20%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_30%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_30%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_40%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_40%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_50%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_50%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_60%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_60%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_70%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_70%: 0.9999 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_80%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_80%: 0.9999 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_89%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and altered_text_clone_89%: 0.9999 =>(bare html)
+
+        [CLONE-TYPE: RESHUFFLE]
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_0%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_0%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_10%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_10%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_20%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_20%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_30%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_30%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_40%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_40%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_50%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_50%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_60%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_60%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_70%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_70%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_80%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_80%: 1.0 =>(bare html)
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_89%: 1.0
+        Similarity between Original(GitHub-Homepage.html) and reshuffle_clone_89%: 1.0 =>(bare html)

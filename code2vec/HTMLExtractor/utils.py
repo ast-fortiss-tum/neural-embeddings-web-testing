@@ -15,7 +15,6 @@ tokens_vocab = ['p', 'a', 'button', 'form', 'img', 'section', 'h1', 'h2', 'h3', 
 structural_tags = ['section', 'ul', 'ol'] #'head', 'body',
 ignored_tags = ['tspan', 'textpath', ] 
 
-
 def get_immediate_parents(tag):
     parents_list = []
     for parent in tag.find_parents():
@@ -25,16 +24,9 @@ def get_immediate_parents(tag):
 
 # @param: soup -> soup object of the html page
 # returns list the nodes of possible target labels
-# fix: only returns html tag
+# TODO: only returns html tag, find meaningful target labels, eg. content of the page
 def extract_target_labels(soup):
-    # target_labels = []
-    # for tag in soup.find_all():
-    #     if tag.name == 'div' and len(tag.find_all(recursive=False)) > 1:
-    #         target_labels.append(tag)
-    #     elif tag.name in structural_tags:
-    #         target_labels.append(tag)
-    # return target_labels
-    return [soup.html]
+    return [soup.html] # todo: find meaningful target labels
 
 
 # extracts the path of 2 nodes in the html tree => eg. 'p^div^body^html'
@@ -42,7 +34,6 @@ def extract_target_labels(soup):
 # @param: second -> the second node to extract the path to
 # @param: soup -> soup object of the html page
 def extract_path(first, second, soup):
-    # print(f"trying to extract path from {first.name} to {second.name}\n")
     path = []
     if first == second: return ",".join(path)
     if second in get_immediate_parents(first):
@@ -90,7 +81,7 @@ def extract_path(first, second, soup):
 
 # extracts contexts of tags from vocabulary
 # @param: node -> html tag of which to extract contexts from 
-# @param: simple, default=False -> only extract contexts of direct neighbor nodes (parent/childs) of tags from vocabulary (=> path lenght = 1)
+# @param: simple, default=False -> only extract contexts of direct neighbor nodes (parent/childs) of tags from vocabulary (=> path length = 1)
 # returns array of contexts (-> strings of the form: 'tag1,path,tag2')
 def extract_contexts(node, simple=False):
     if node == None: return []
@@ -101,14 +92,12 @@ def extract_contexts(node, simple=False):
                 for c in tag.find_all(recursive=not simple):
                     if c.name in ignored_tags: continue
                     p = extract_path(tag, c, node)
-                    if p in contexts: continue                    
                     contexts.append(f"{tag.name},{p},{c.name}")
             elif tag.find_parent():
                 p = extract_path(tag, tag.find_parent(), node)
-                if p in contexts: continue
                 contexts.append(f"{tag.name},{p},{tag.find_parent().name}")
                 if tag.text and tag.text != '\n':
-                    text = re.sub(r'\s+', '_', str(tag.text).replace('\n', '').replace('\t', '').replace(',', ''))
+                    text = re.sub(r'\s+', '_', str(tag.text).replace('\n', '').replace('\t', '').replace(',', '')) # replace whitespaces with '_' and remove commas as for Code2Vec context extraction required
                     if text != '': contexts.append(f"{tag.name},contains," + text)
     return contexts
 
@@ -118,7 +107,7 @@ def print_examples(soup):
     target_labels = extract_target_labels(soup)
     for target_label in target_labels:
         contexts = extract_contexts(target_label, simple=False)
-        print(f'{target_label.name} {" ".join([con for con in contexts])}\n')    
+        print(f'{target_label.name} {" ".join([con for con in contexts])}\n')
         # print(f'{target_label.name}|{str(target_label.attrs).replace(" ", "")} {" ".join([con for con in contexts])}\n')    # add attributes of target label to output
 
 # prints examples which are extracted from a single html file
@@ -147,6 +136,9 @@ def calculate_cosine_similarity(contexts):
 
 
 if __name__ == '__main__':
+
+    extract('code2vec/resources/MDN_webdocs.html')
+
     parser = ArgumentParser()
     # parser.add_argument("-maxlen", "--max_path_length", dest="max_path_length", required=False, default=8)
     # parser.add_argument("-maxwidth", "--max_path_width", dest="max_path_width", required=False, default=2)

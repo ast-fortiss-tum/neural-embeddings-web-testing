@@ -193,9 +193,9 @@ def calculate_cosine_similarity_bare_html_representation(soup1, soup2, name1, na
 
 
 if __name__ == '__main__':    
-
+    pass
     # print('MDN Webdocs')
     # test_extractor_with_generating_clones('code2vec/resources/MDN_webdocs.html', comparison_filepaths=['code2vec/resources/MDN_Blog.html', 'code2vec/resources/Wolfram_Alpha.html'])
 
-    print('Github')
-    test_extractor_with_generating_clones('code2vec/resources/GitHub-Homepage.html', comparison_filepaths=['code2vec/resources/GitHub-Pricing.html', 'code2vec/resources/Wolfram_Alpha.html'])
+    # print('Github')
+    # test_extractor_with_generating_clones('code2vec/resources/GitHub-Homepage.html', comparison_filepaths=['code2vec/resources/GitHub-Pricing.html', 'code2vec/resources/Wolfram_Alpha.html'])

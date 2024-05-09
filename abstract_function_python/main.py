@@ -2,57 +2,32 @@ import json
 import pickle
 
 # new imports
+import utils
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch
 
-hf_path_to_model = 'lgk03/NDD-claroline_test-content'  # this should be dynamically set - currently the best performing model
+hf_path_to_model = 'lgk03/NDD-claroline_test-content'  # this should be dynamically set - currently the best performing model in terms of f1 score
 
 tokenizer = AutoTokenizer.from_pretrained(hf_path_to_model)
 model = AutoModelForSequenceClassification.from_pretrained(hf_path_to_model)
 model.eval()  # set model into evaluation mode
 
-
-def preprocess_for_inference(state1, state2):
-    """
-    :param state1: respective html representation of the first state (i.e. state12.html.content_tags)
-    :param state2: respective html representation of the second state (i.e. state12.html.content_tags)
-    :return: A dictionary containing the tokenized representations of `state1` and `state2`.
-      This dictionary includes the following keys: 'input_ids', 'token_type_ids', 'attention_mask',
-      where each key maps to a tensor representing the respective tokenized data.
-    """
-    tokenized_inputs = tokenizer(state1, state2,
-                                 padding='max_length',
-                                 truncation='longest_first',
-                                 max_length=512,
-                                 return_tensors='pt')
-    return tokenized_inputs
-
-
-row = {'TODO'}
+row = {'TODO'} # TODO one row of the dataset to be used for inference
 state1 = row['trimmed_state1']
 state2 = row['trimmed_state2']
 # map the human classification to the labels that the model will predict (1 = clone/near duplicate & 0 = distinct)
 actual_class = 1 if row['HUMAN_CLASSIFICATION'] == 1 or row['HUMAN_CLASSIFICATION'] == 0 else 0
 
-inputs = preprocess_for_inference(state1, state2)
-
-# run inference
-with torch.no_grad():  # disable gradient computation
-    outputs = model(**inputs)
-
-# extract logits and apply softmax
-probabilities = torch.softmax(outputs.logits, dim=-1)
-
-# predict the class with the highest probability
-predicted_class_id = probabilities.argmax(dim=-1).item()
-
-print(probabilities[0, predicted_class_id].item())
+inputs = utils.preprocess_for_inference(state1, state2, tokenizer)
+predicted_class_id = utils.infer(model, inputs)
 
 is_correct = predicted_class_id == actual_class
+
 print(f"Model prediction correct? {is_correct}")
 
 print("Exiting")
 exit()
+
 
 # existing code =========
 

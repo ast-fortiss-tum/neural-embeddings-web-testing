@@ -61,7 +61,6 @@ import numpy as np
 from bs4 import BeautifulSoup
 from bs4.element import NavigableString, Comment
 from flask import Flask, request
-from gensim.models import Doc2Vec
 from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)

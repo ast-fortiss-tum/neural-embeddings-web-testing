@@ -4,7 +4,6 @@ import pickle
 # new imports
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch
-import time
 
 hf_path_to_model = 'lgk03/NDD-claroline_test-content'  # this should be dynamically set - currently the best performing model
 
@@ -66,22 +65,6 @@ from gensim.models import Doc2Vec
 from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
-
-doc2vec_model_content_tags = Doc2Vec.load('../trained_model/DS_content_tags_modelsize100epoch31.doc2vec.model')
-doc2vec_model_content = Doc2Vec.load('../trained_model/DS_content_modelsize100epoch31.doc2vec.model')
-doc2vec_model_tags = Doc2Vec.load('../trained_model/DS_tags_modelsize100epoch31.doc2vec.model')
-
-CLASSIFIER_PATH = '../trained_classifiers/'
-CLASSIFIER_USED = CLASSIFIER_PATH + "within-apps-petclinic-gaussian-naive-bayes-doc2vec-distance-all.sav"
-
-print('CLASSIFIER = %s' % CLASSIFIER_USED)
-
-model = None
-try:
-    model = pickle.load(open(CLASSIFIER_USED, 'rb'))
-except FileNotFoundError:
-    print("Cannot find classifier %s" % CLASSIFIER_USED)
-    exit()
 
 
 # call to route /equals executes equalRoute function

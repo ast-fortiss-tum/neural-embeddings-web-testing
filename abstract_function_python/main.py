@@ -65,7 +65,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 
-
 # call to route /equals executes equalRoute function
 # use URL, DOM String, Dom content and DOM syntax tree as params
 @app.route('/', methods=('GET', 'POST'))

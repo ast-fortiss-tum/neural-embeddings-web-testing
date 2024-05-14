@@ -1,0 +1,138 @@
+{
+  "builder_name": "csv",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "97k-state-pairs",
+  "dataset_size": 656137867,
+  "description": "",
+  "download_checksums": {
+    "/content/drive/MyDrive/dataset_labeled/train_test_sets/train_pagekit.csv": {
+      "num_bytes": 601706930,
+      "checksum": null
+    },
+    "/content/drive/MyDrive/dataset_labeled/train_test_sets/test_pagekit.csv": {
+      "num_bytes": 55892718,
+      "checksum": null
+    }
+  },
+  "download_size": 657599648,
+  "features": {
+    "appname": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "crawl": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "state1": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "state2": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "DOM_RTED": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "DOM_Levenshtein": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "DOM_contentHash": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "DOM_SIMHASH": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "VISUAL_BlockHash": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "VISUAL_PHash": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "VISUAL_Hyst": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "VISUAL_PDiff": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "VISUAL_SIFT": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "VISUAL_SSIM": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "HUMAN_CLASSIFICATION": {
+      "dtype": "int64",
+      "_type": "Value"
+    },
+    "TAGS": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "trimmed_state1": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "trimmed_state2": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "input_ids": {
+      "feature": {
+        "dtype": "int32",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "attention_mask": {
+      "feature": {
+        "dtype": "int8",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "labels": {
+      "dtype": "int64",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 1313737515,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 600397025,
+      "num_examples": 87611,
+      "shard_lengths": [
+        70000,
+        17611
+      ],
+      "dataset_name": "97k-state-pairs"
+    },
+    "test": {
+      "name": "test",
+      "num_bytes": 55740842,
+      "num_examples": 9730,
+      "dataset_name": "97k-state-pairs"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}

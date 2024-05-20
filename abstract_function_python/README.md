@@ -1,6 +1,7 @@
 # Flask BERT App - Docker
 
-This is a simple Flask app that uses fine-tuned BERT models to classify pairs of states. The app is containerized using Docker.
+This is a simple Flask app that uses fine-tuned BERT models to classify pairs of states of web pages. The app is containerized using Docker.
+Its main purpose is to provide an endpoint which the Crawljax Crawler can call to get an classification given two states represented by HTML.
 
 ### Building the image
 

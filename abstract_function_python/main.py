@@ -1,7 +1,6 @@
 import json
 import pickle
-
-# new imports
+import os
 import utils
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from datasets import load_dataset
@@ -9,12 +8,15 @@ import torch
 import pandas as pd
 from flask import Flask, request
 
-feature = 'content'
-hf_model_name = f'lgk03/NDD-claroline_test-{feature}'  # this should be dynamically set - currently the best performing model in terms of f1 score
-tokenizer = AutoTokenizer.from_pretrained(hf_model_name)
-model = AutoModelForSequenceClassification.from_pretrained(hf_model_name)
-model.eval()  # set model into evaluation mode
+def load_model_and_tokenizer():
+    feature = os.getenv('FEATURE', 'content')
+    hf_model_name = os.getenv('HF_MODEL_NAME', f'lgk03/NDD-claroline_test-{feature}')
+    tokenizer = AutoTokenizer.from_pretrained(hf_model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(hf_model_name)
+    model.eval()  # set model into evaluation mode
+    return model, tokenizer, feature
 
+model, tokenizer, feature = load_model_and_tokenizer()
 
 app = Flask(__name__)
 

@@ -6,7 +6,7 @@ import com.crawljax.core.state.StateVertexFactory;
 
 public class Word2VecEmbeddingStateVertexFactory extends StateVertexFactory {
     // private String classifierURI = "http://localhost:4242/classify";
-    private String classifierURI = "http://127.0.0.1:5000/equals"
+    private String classifierURI = "http://127.0.0.1:5000/equals";
 
     // creates object which will then make the comparison
     @Override

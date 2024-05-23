@@ -61,8 +61,9 @@ public class Word2VecEmbeddingStateVertexImpl extends StateVertexImpl {
 
             // TODO serialize object in some way and create json
             // dummy json
-            String jsonInputString = "{\"dom1\": \"" + this_dom + "\",
-                                       \"dom2\": \"" + that_dom + "\"}";
+            String jsonInputString = "{\"dom1\": \"" + this_dom + "\", " +
+                    "\"dom2\": \"" + that_dom + "\"}";
+
 
             try(OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
@@ -70,7 +71,7 @@ public class Word2VecEmbeddingStateVertexImpl extends StateVertexImpl {
             }
 
             BufferedReader reader =  new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuffer responseContent = new StringBuffer();
+            StringBuilder responseContent = new StringBuilder();
             String line;
 
             int status = connection.getResponseCode();

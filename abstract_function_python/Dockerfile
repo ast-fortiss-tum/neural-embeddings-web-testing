@@ -11,6 +11,6 @@ RUN apt-get update && \
 RUN pip install --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 5000
+EXPOSE 5001
 
 CMD ["python", "main.py"]

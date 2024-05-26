@@ -13,21 +13,47 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>4.21.0</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.crawljax/crawljax-core -->
         <dependency>
             <groupId>com.crawljax</groupId>
             <artifactId>crawljax-core</artifactId>
-            <version>4.1</version>
+            <version>5.2.3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.crawljax.plugins/crawloverview-plugin -->
         <dependency>
             <groupId>com.crawljax.plugins</groupId>
             <artifactId>crawloverview-plugin</artifactId>
-            <version>4.1</version>
+            <version>5.2.3</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.21.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.8.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.assertthat</groupId>
+            <artifactId>selenium-shutterbug</artifactId>
+            <version>1.6</version>
+        </dependency>
+    </dependencies>
 </project>

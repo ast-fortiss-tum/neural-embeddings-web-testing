@@ -6,6 +6,10 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import state_abstraction_function.Word2VecEmbeddingStateVertexFactory;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
 import java.util.concurrent.TimeUnit;
 
 public class RunCrawler {
@@ -14,6 +18,8 @@ public class RunCrawler {
     private static final String URL = "https://www.york.ac.uk/teaching/cws/wws/webpage1.html";
 
     public static void main(String[] args) throws Exception {
+
+        WebDriverManager.chromedriver().clearDriverCache().clearResolutionCache();
 
         CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 //      1. set crawl rules

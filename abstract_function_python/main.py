@@ -1,4 +1,5 @@
 import json
+import re
 import pickle
 import os
 import utils
@@ -22,11 +23,15 @@ app = Flask(__name__)
 
 # call to route /equals executes equalRoute function
 # use URL, DOM String, Dom content and DOM syntax tree as params
-@app.route('/', methods=('GET', 'POST'))
+@app.route('/equals', methods=('GET', 'POST'))
 def equal_route():
     content_type = request.headers.get('Content-Type')
     if content_type == 'application/json' or content_type == 'application/json; utf-8':
-        data = json.loads(request.data)
+        fixed_json = utils.fix_json(request.data.decode('utf-8'))
+        if fixed_json == "Error decoding JSON":
+            print("Exiting due to JSON error")
+            exit(1)
+        data = json.loads(fixed_json)
     else:
         return 'Content-Type not supported!'
 

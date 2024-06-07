@@ -3,6 +3,8 @@ import torch
 from bs4 import BeautifulSoup, Comment
 from bs4.element import NavigableString
 import gensim
+import json
+import re
 
 # File to define utils for abstract function python
 
@@ -88,3 +90,47 @@ def bert_equals(dom1, dom2, model, tokenizer, feature='content_tags'):
     processed_inputs = preprocess_for_inference(data1, data2, tokenizer)
     predicted = get_prediction(model, processed_inputs)
     return predicted
+
+# Function to fix JSON strings incoming from the crawler
+def fix_json(json_string):
+    fixed_json = []
+    in_string = False
+    ix = 0
+    char = ''
+
+    for ix, char in enumerate(json_string):
+        if char == '"' and in_string:
+            if json_string[ix+1] == ',' or json_string[ix+1] == '}' or json_string[ix+1:].replace(" ", "").startswith('}') or json_string[ix+1:].replace(" ", "").startswith('\n'):
+                in_string = False
+            else:
+                fixed_json.append("'")
+                continue
+        elif not in_string and char == '"':
+            if len(fixed_json) > 2 and (fixed_json[-1] == ':' or fixed_json[-2] == ':'):
+                in_string = True
+        if char == '\\':
+            fixed_json.append('\\')
+        fixed_json.append(char)
+        if not in_string and char == '}':
+            break
+
+    fixed_json_string = ''.join(fixed_json)
+    fixed_json_string = fixed_json_string.replace('\n', '')
+    fixed_json_string = sanitize_json_string(fixed_json_string)
+
+    try:
+        json.loads(fixed_json_string)
+        return fixed_json_string
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e},\n fixed JSON: {fixed_json_string}")
+        return "Error decoding JSON"
+
+# Function to sanitize JSON strings by removing non-printable ASCII characters, TODO: check if this destroys the further processing somehow
+def sanitize_json_string(json_str):
+    # Define a regex pattern for valid printable ASCII characters (excluding control characters)
+    printable_ascii_pattern = re.compile(r'[\x20-\x7E]')
+
+    # Remove all characters that do not match the printable ASCII pattern
+    sanitized_str = ''.join(char if printable_ascii_pattern.match(char) else '' for char in json_str)
+
+    return sanitized_str

@@ -49,7 +49,8 @@ def retrieve_abstraction_from_html(bs, corpus):
 
 # Preprocesses the input states for inference by tokenizing them using the provided tokenizer.
 def preprocess_for_inference(state1, state2, tokenizer):
-    tokenized_inputs = tokenizer(state1, state2,
+    trimmed_state1, trimmed_state2 = trim_common_html(state1, state2)
+    tokenized_inputs = tokenizer(trimmed_state1, trimmed_state2,
                                  padding='max_length',
                                  truncation='longest_first',
                                  max_length=512,
@@ -91,7 +92,7 @@ def bert_equals(dom1, dom2, model, tokenizer, feature='content_tags'):
     predicted = get_prediction(model, processed_inputs)
     return predicted
 
-# Function to fix JSON strings incoming from the crawler
+# Fix JSON strings incoming from the crawler
 def fix_json(json_string):
     fixed_json = []
     in_string = False
@@ -125,7 +126,8 @@ def fix_json(json_string):
         print(f"Error decoding JSON: {e},\n fixed JSON: {fixed_json_string}")
         return "Error decoding JSON"
 
-# Function to sanitize JSON strings by removing non-printable ASCII characters, TODO: check if this destroys the further processing somehow
+
+# Sanitize JSON strings by removing non-printable ASCII characters, TODO: check if this destroys the further processing somehow
 def sanitize_json_string(json_str):
     # Define a regex pattern for valid printable ASCII characters (excluding control characters)
     printable_ascii_pattern = re.compile(r'[\x20-\x7E]')
@@ -134,3 +136,55 @@ def sanitize_json_string(json_str):
     sanitized_str = ''.join(char if printable_ascii_pattern.match(char) else '' for char in json_str)
 
     return sanitized_str
+
+
+# Trimming the common leading and trailing parts from two HTML page representations (content_tags, tags, content)
+def ensure_format(s):
+    if s.startswith(","): s = s[1:]
+    if not s.startswith('[\"'):
+        if not s.startswith('\"'): s = '[\"' + s
+        else: s = "[" + s
+
+    if not s.endswith('\"]'):
+        if not s.endswith('\"'): s = s + '\"]'
+        else: s = s + ']'
+
+    return s
+
+def trim_common_html(state1, state2):
+    """
+    Trims the common leading and trailing parts from two HTML page representations (content_tags, tags, content).
+
+    :param state1: HTML content of the first page as a string.
+    :param state2: HTML content of the second page as a string.
+    :return: A tuple of the trimmed HTML contents.
+    """
+    leading_common_length = 0
+    for x, y in zip(state1, state2):
+        if x == y:
+            leading_common_length += 1
+        else:
+            break
+    trailing_common_length = 0
+    for x, y in zip(reversed(state1[leading_common_length:]), reversed(state2[leading_common_length:])):
+        if x == y:
+            trailing_common_length += 1
+        else:
+            break
+    trimmed_state1 = str(state1[leading_common_length: len(state1) - trailing_common_length])
+    trimmed_state2 = str(state2[leading_common_length: len(state2) - trailing_common_length])
+    if trimmed_state1.startswith('\",'): trimmed_state1 = trimmed_state1[3:]
+    if trimmed_state2.startswith('\",'): trimmed_state2 = trimmed_state2[3:]
+    if trimmed_state1.endswith('\"'): trimmed_state1 = trimmed_state1[:-3]
+    if trimmed_state2.endswith('\"'): trimmed_state2 = trimmed_state2[:-3]
+
+    # if one page is subset of the other page
+    if trimmed_state2 == "" or trimmed_state1 == "":
+      return state1, state2
+
+    trimmed_states = [trimmed_state1, trimmed_state2]
+    corrected_states = [ensure_format(t) for t in trimmed_states]
+
+    trimmed_state1, trimmed_state2 = corrected_states
+
+    return trimmed_state1, trimmed_state2

@@ -11,7 +11,7 @@ from flask import Flask, request
 
 def load_model_and_tokenizer():
     feature = os.getenv('FEATURE', 'content')
-    hf_model_name = os.getenv('HF_MODEL_NAME', f'lgk03/NDD-claroline_test-{feature}')
+    hf_model_name = os.getenv('HF_MODEL_NAME', f'lgk03/NDD-claroline_test-{feature}') # distilBERT-NDD.html.{feature}
     tokenizer = AutoTokenizer.from_pretrained(hf_model_name)
     model = AutoModelForSequenceClassification.from_pretrained(hf_model_name)
     model.eval()  # set model into evaluation mode
@@ -46,7 +46,7 @@ def equal_route():
 
     result = "true" if result == 1 else "false"
 
-    # return true if the two objects are the clones/near-duplicates
+    # return true if the two objects are clones/near-duplicates => comment was here before
     return result
 
 

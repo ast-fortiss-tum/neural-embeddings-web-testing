@@ -90,6 +90,14 @@ def bert_equals(dom1, dom2, model, tokenizer, feature='content_tags'):
 
     processed_inputs = preprocess_for_inference(data1, data2, tokenizer)
     predicted = get_prediction(model, processed_inputs)
+
+    print("=====================================")
+    print(data1)
+    print("compared to:")
+    print(data2)
+    print(f'Predicted class: {"near-dup/clone" if predicted == 1 else "distinct"}')
+    print("=====================================")
+
     return predicted
 
 # Fix JSON strings incoming from the crawler
@@ -98,6 +106,8 @@ def fix_json(json_string):
     in_string = False
     ix = 0
     char = ''
+
+    fixed_json_string = json_string
 
     for ix, char in enumerate(json_string):
         if char == '"' and in_string:

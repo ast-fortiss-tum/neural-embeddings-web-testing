@@ -59,38 +59,43 @@ public class Word2VecEmbeddingStateVertexImpl extends StateVertexImpl {
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
             connection.setDoOutput(true);
 
-            // TODO serialize object in some way and create json
-            // dummy json
-            String jsonInputString = "{\"dom1\": \"" + this_dom + "\", " +
-                    "\"dom2\": \"" + that_dom + "\"}";
-
-
-            try(OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-
-            BufferedReader reader =  new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder responseContent = new StringBuilder();
-            String line;
-
-            int status = connection.getResponseCode();
-
-            if (status == 200){
-                while ((line = reader.readLine()) != null){
-                    responseContent.append(line);
-                }
-                reader.close();
-            }
-
-            boolean result = responseContent.toString().equals("true");
-
-            System.out.println("Result is " + result);
+            boolean result = isResult(this_dom, that_dom);
+            
             return result;
 
         } catch (IOException e){
             e.printStackTrace();
         }
         return false;
+    }
+
+    private static boolean isResult(String this_dom, String that_dom) throws IOException {
+        this_dom = this_dom.replace('"', '\'');
+        that_dom = that_dom.replace('"', '\'');
+
+        String jsonInputString = "{\"dom1\": \"" + this_dom + "\", " +
+                "\"dom2\": \"" + that_dom + "\"}";
+
+
+        try(OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        BufferedReader reader =  new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder responseContent = new StringBuilder();
+        String line;
+
+        int status = connection.getResponseCode();
+
+        if (status == 200){
+            while ((line = reader.readLine()) != null){
+                responseContent.append(line);
+            }
+            reader.close();
+        }
+
+        boolean result = responseContent.toString().equals("true");
+        return result;
     }
 }

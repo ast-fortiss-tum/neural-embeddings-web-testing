@@ -135,3 +135,6 @@ csv_results_table/*
 trained_classifiers/
 trained_model/
 SS_as_distance_matrix.csv
+
+# Local Testing
+test.py

@@ -60,7 +60,7 @@ public class Word2VecEmbeddingStateVertexImpl extends StateVertexImpl {
             connection.setDoOutput(true);
 
             boolean result = isResult(this_dom, that_dom);
-            
+
             return result;
 
         } catch (IOException e){

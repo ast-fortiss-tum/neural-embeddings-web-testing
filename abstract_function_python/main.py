@@ -9,9 +9,11 @@ import torch
 import pandas as pd
 from flask import Flask, request
 
+hf_model_name = "lgk03/NDD-addressbook_test-content" # this gets overwritten by the env variable in load_model_and_tokenizer
+
 def load_model_and_tokenizer():
     feature = os.getenv('FEATURE', 'content')
-    hf_model_name = os.getenv('HF_MODEL_NAME', f'lgk03/NDD-claroline_test-{feature}') # distilBERT-NDD.html.{feature}
+    hf_model_name = os.getenv('HF_MODEL_NAME', f'lgk03/NDD-addressbook_test-{feature}') # distilBERT-NDD.html.{feature}
     tokenizer = AutoTokenizer.from_pretrained(hf_model_name)
     model = AutoModelForSequenceClassification.from_pretrained(hf_model_name)
     model.eval()  # set model into evaluation mode

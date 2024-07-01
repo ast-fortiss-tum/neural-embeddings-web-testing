@@ -8,6 +8,7 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import org.bytedeco.opencv.presets.opencv_core;
+import org.openqa.selenium.WebDriver;
 import state_abstraction_function.Word2VecEmbeddingStateVertexFactory;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -17,16 +18,19 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.concurrent.TimeUnit;
 
 public class RunCrawler {
-    private static final long WAIT_TIME_AFTER_EVENT = 500;
-    private static final long WAIT_TIME_AFTER_RELOAD = 500;
+    private static final long WAIT_TIME_AFTER_EVENT = 500; //500
+    private static final long WAIT_TIME_AFTER_RELOAD = 500; //500
 
     private static final String URL = "http://localhost:3000/addressbook/";
     private static final String APP_NAME = "addressbook";
+    private static final int maxCrawlTime = 60;
 //    private static final String URL = "https://www.york.ac.uk/teaching/cws/wws/webpage1.html";
 
     public static void main(String[] args) throws Exception {
-
+        System.out.println("Starting Crawler for " + APP_NAME + " and maximum crawl time " + maxCrawlTime + "min");
         WebDriverManager.chromedriver().clearDriverCache().clearResolutionCache();
+//        WebDriverManager.chromedriver().browserVersion("117").setup();
+//        System.setProperty("webdriver.chrome.driver", "/Users/lgk/chrome/mac_arm-116.0.5793.0/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing");
 
         CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 //      1. set crawl rules
@@ -36,10 +40,9 @@ public class RunCrawler {
         builder.crawlRules().crawlFrames(false);
         builder.crawlRules().clickElementsInRandomOrder(false);
 //      2. set max number of states
-//        builder.setMaximumStates(maxStates);
         builder.setUnlimitedStates();
 //      3. set max run time
-        builder.setMaximumRunTime(3, TimeUnit.MINUTES);
+        builder.setMaximumRunTime(60, TimeUnit.MINUTES);
 //        builder.setUnlimitedRuntime();
 //      4. set crawl depth
         builder.setUnlimitedCrawlDepth();
@@ -53,15 +56,13 @@ public class RunCrawler {
 //      8. add crawl overview
         builder.addPlugin(new CrawlOverview());
 
-//      8.5 add input respective for the app
+//      8.5 add input respective for the app used (e.g. login information)
         builder.crawlRules().setInputSpec(Helper.setInputField(APP_NAME));
 
 //      9. build crawler
         CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 //      10. run crawler
         crawljax.call();
-
-
     }
 
     private static class Helper {
@@ -75,7 +76,7 @@ public class RunCrawler {
                     System.out.println("Set input fields for addressbook");
                     break;
                 case "claroline":
-                    System.out.println("IMPLEMENT HANDLING FOR CLAROLINE");
+                    System.out.println("TODO IMPLEMENT HANDLING FOR CLAROLINE");
                     break;
                 default:
                     System.out.println(APP_NAME + " not implemented yet");

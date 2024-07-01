@@ -5,6 +5,7 @@ from bs4.element import NavigableString
 import gensim
 import json
 import re
+import main
 
 # File to define utils for abstract function python
 
@@ -91,12 +92,12 @@ def bert_equals(dom1, dom2, model, tokenizer, feature='content_tags'):
     processed_inputs = preprocess_for_inference(data1, data2, tokenizer)
     predicted = get_prediction(model, processed_inputs)
 
-    print("=====================================")
-    print(data1)
-    print("compared to:")
-    print(data2)
-    print(f'Predicted class: {"near-dup/clone" if predicted == 1 else "distinct"}')
-    print("=====================================")
+    # print(main.hf_model_name, "=====================================")
+    # print(data1)
+    # print("compared to:")
+    # print(data2)
+    print(f'{main.hf_model_name} | Predicted class: {"near-dup/clone" if predicted == 1 else "distinct"}')
+    # print(main.hf_model_name, "=====================================")
 
     return predicted
 

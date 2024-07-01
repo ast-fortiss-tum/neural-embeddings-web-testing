@@ -23,7 +23,7 @@ public class RunCrawler {
 
     private static final String URL = "http://localhost:3000/addressbook/";
     private static final String APP_NAME = "addressbook";
-    private static final int maxCrawlTime = 60;
+    private static final int maxCrawlTime = 1; //60
 //    private static final String URL = "https://www.york.ac.uk/teaching/cws/wws/webpage1.html";
 
     public static void main(String[] args) throws Exception {
@@ -42,7 +42,7 @@ public class RunCrawler {
 //      2. set max number of states
         builder.setUnlimitedStates();
 //      3. set max run time
-        builder.setMaximumRunTime(60, TimeUnit.MINUTES);
+        builder.setMaximumRunTime(maxCrawlTime, TimeUnit.MINUTES);
 //        builder.setUnlimitedRuntime();
 //      4. set crawl depth
         builder.setUnlimitedCrawlDepth();

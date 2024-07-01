@@ -9,18 +9,38 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <crawljax.version>5.2.3</crawljax.version>
+        <java.version>11</java.version>
+        <maven.min.version>3.5.0</maven.min.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <slf4j.version>2.0.7</slf4j.version>
+        <logback.version>1.4.7</logback.version>
+        <selenium.version>4.9.0</selenium.version>
+        <selenium-devtools.version>selenium-devtools-v112</selenium-devtools.version>
+        <jetty.version>11.0.15</jetty.version>
+        <guice.version>5.1.0</guice.version>
+        <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-server</artifactId>
+                <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
-                <version>4.21.0</version>
-                <scope>import</scope>
-                <type>pom</type>
+                <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.14.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -29,37 +49,22 @@
         <dependency>
             <groupId>com.crawljax</groupId>
             <artifactId>crawljax-core</artifactId>
-            <version>5.2.3</version>
+            <version>${crawljax.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.crawljax.plugins</groupId>
             <artifactId>crawloverview-plugin</artifactId>
-            <version>5.2.3</version>
+            <version>${crawljax.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>4.21.0</version>
+            <groupId>com.crawljax.plugins</groupId>
+            <artifactId>testcasegenerator</artifactId>
+            <version>${crawljax.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>5.9.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.assertthat</groupId>
-            <artifactId>selenium-shutterbug</artifactId>
-            <version>1.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.14.0</version>
+            <version>5.7.0</version>
         </dependency>
     </dependencies>
 </project>

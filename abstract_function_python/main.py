@@ -23,6 +23,7 @@ model, tokenizer, feature = load_model_and_tokenizer()
 
 app = Flask(__name__)
 
+
 # call to route /equals executes equalRoute function
 # use URL, DOM String, Dom content and DOM syntax tree as params
 @app.route('/equals', methods=('GET', 'POST'))
@@ -53,4 +54,5 @@ def equal_route():
 
 
 if __name__ == "__main__":
+    print(f"******* We are using the model: {hf_model_name} *******")
     app.run(debug=False)

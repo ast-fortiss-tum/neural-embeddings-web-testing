@@ -7,13 +7,9 @@ import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
-import org.bytedeco.opencv.presets.opencv_core;
-import org.openqa.selenium.WebDriver;
 import state_abstraction_function.Word2VecEmbeddingStateVertexFactory;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,15 +18,13 @@ public class RunCrawler {
     private static final long WAIT_TIME_AFTER_RELOAD = 500; //500
 
     private static final String URL = "http://localhost:3000/addressbook/";
-    private static final String APP_NAME = "addressbook";
-    private static final int maxCrawlTime = 1; //60
 //    private static final String URL = "https://www.york.ac.uk/teaching/cws/wws/webpage1.html";
+    private static final String APP_NAME = "addressbook";
+    private static final int maxCrawlTime = 60;
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Starting Crawler for " + APP_NAME + " and maximum crawl time " + maxCrawlTime + "min");
+        System.out.println("================== Starting Crawler for " + APP_NAME + " and maximum crawl time " + maxCrawlTime + "min ==================");
         WebDriverManager.chromedriver().clearDriverCache().clearResolutionCache();
-//        WebDriverManager.chromedriver().browserVersion("117").setup();
-//        System.setProperty("webdriver.chrome.driver", "/Users/lgk/chrome/mac_arm-116.0.5793.0/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing");
 
         CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 //      1. set crawl rules
@@ -39,29 +33,26 @@ public class RunCrawler {
         builder.crawlRules().crawlHiddenAnchors(true);
         builder.crawlRules().crawlFrames(false);
         builder.crawlRules().clickElementsInRandomOrder(false);
-//      2. set max number of states
-        builder.setUnlimitedStates();
-//      3. set max run time
-        builder.setMaximumRunTime(maxCrawlTime, TimeUnit.MINUTES);
-//        builder.setUnlimitedRuntime();
-//      4. set crawl depth
         builder.setUnlimitedCrawlDepth();
-//      5. setup abstract function to be used
-        builder.setStateVertexFactory(new Word2VecEmbeddingStateVertexFactory());
-//      6. set timeouts
+        builder.setUnlimitedStates();
+        builder.setMaximumRunTime(maxCrawlTime, TimeUnit.MINUTES);
+
+        // 5. setup abstract function to be used
+//        builder.setStateVertexFactory(new Word2VecEmbeddingStateVertexFactory()); //comment in for using Transformers SAF
+
+        // set timeouts
         builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
         builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
-//      7. choose browser
-        builder.setBrowserConfig(new BrowserConfiguration(EmbeddedBrowser.BrowserType.CHROME, 1));
-//      8. add crawl overview
+
+        builder.setBrowserConfig(new BrowserConfiguration(EmbeddedBrowser.BrowserType.CHROME_HEADLESS, 1));
+
+        // CrawlOverview
         builder.addPlugin(new CrawlOverview());
 
-//      8.5 add input respective for the app used (e.g. login information)
+        // add input respective for the app used (e.g. login information)
         builder.crawlRules().setInputSpec(Helper.setInputField(APP_NAME));
 
-//      9. build crawler
         CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
-//      10. run crawler
         crawljax.call();
     }
 

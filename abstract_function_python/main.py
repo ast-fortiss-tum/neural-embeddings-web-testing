@@ -9,7 +9,16 @@ import torch
 import pandas as pd
 from flask import Flask, request
 
+no_of_inferences = 0
+
 hf_model_name = "lgk03/NDD-addressbook_test-content" # this gets overwritten by the env variable in load_model_and_tokenizer
+
+# counter for number of inferences
+def increase_no_of_inferences():
+    global no_of_inferences
+    no_of_inferences += 1
+    if no_of_inferences % 100 == 0:
+        print(f"Number of inferences: {no_of_inferences}")
 
 def load_model_and_tokenizer():
     feature = os.getenv('FEATURE', 'content')
@@ -49,6 +58,7 @@ def equal_route():
 
     result = "true" if result == 1 else "false"
 
+    increase_no_of_inferences()
     # return true if the two objects are clones/near-duplicates => comment was here before
     return result
 

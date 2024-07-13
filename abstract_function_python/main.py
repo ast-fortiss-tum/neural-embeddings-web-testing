@@ -20,9 +20,17 @@ def increase_no_of_inferences():
     if no_of_inferences % 100 == 0:
         print(f"Number of inferences: {no_of_inferences}")
 
-def load_model_and_tokenizer():
-    feature = os.getenv('FEATURE', 'content')
-    hf_model_name = os.getenv('HF_MODEL_NAME', f'lgk03/NDD-addressbook_test-{feature}') # distilBERT-NDD.html.{feature}
+def load_model_and_tokenizer(feature=None, hf_model_name=None):
+    if not feature:
+        feature = os.getenv('FEATURE', 'content')
+    else:
+        feature = feature
+
+    if not hf_model_name:
+        hf_model_name = os.getenv('HF_MODEL_NAME', f'lgk03/NDD-addressbook_test-{feature}') # distilBERT-NDD.html.{feature}
+    else:
+        hf_model_name = hf_model_name
+
     tokenizer = AutoTokenizer.from_pretrained(hf_model_name)
     model = AutoModelForSequenceClassification.from_pretrained(hf_model_name)
     model.eval()  # set model into evaluation mode

@@ -8,140 +8,92 @@ import numpy as np
 import pandas as pd
 from natsort import natsorted
 
+base_path = '/Users/lgk/git/uni/web_test_generation/neural-embeddings-web-testing/'
 
-def is_clone(model, distance):
-    try:
-        prediction = model.predict(np.array(distance).reshape(1, -1))  # 0 = near-duplicates, 1 = distinct
-    except ValueError:
-        prediction = [0]
+APPS = ['addressbook', 'claroline', 'ppma', 'mrbs', 'mantisbt', 'dimeshift', 'pagekit', 'phoenix', 'petclinic']
 
-    if prediction == [0]:
-        return True
-    else:
-        return False
+OUTPUT_CSV = True
 
+setting = "across_apps" # within_apps or across_apps
+filename = f'{base_path}BERT-SAF_csv_results_table/rq2-{setting}.csv' # separate file for each setting (within apps, across apps)
 
-APPS = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
+# def merge_predictions(base_path, setting, app):
+#     features = ['content_tags', 'content', 'tags']
+#     merged_df = None
 
-CLASSIFIERS = {
+#     for feature in features:
+#         pred_file = f'{base_path}model_predictions_ss/{setting}/{feature}/{app}.csv'
+#         predictions = pd.read_csv(pred_file)
 
-    'addressbook': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
+#         if merged_df is None:
+#             # First feature: include all columns
+#             predictions.rename(columns={'PREDICTION': f'{feature}-PREDICTION'}, inplace=True)
+#             merged_df = predictions
+#         else:
+#             # Subsequent features: only add the PREDICTION column
+#             predictions = predictions[['state1', 'state2', 'PREDICTION']]
+#             predictions.rename(columns={'PREDICTION': f'{feature}-PREDICTION'}, inplace=True)
+#             merged_df = pd.merge(merged_df, predictions, on=['state1', 'state2'], how='outer')
 
-    'claroline': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
+#     return merged_df
 
-    'dimeshift': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
+# if __name__ == '__main__':
+#     setting = "across_apps" # or "within_apps"
 
-    'mantisbt': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
+#     for app in APPS:
+#         merged_predictions = merge_predictions(base_path, setting, app)
+#         merged_predictions.to_csv(f'{base_path}model_predictions_ss/{setting}/{app}.csv', index=False)
+#         print(f'Merged predictions for {app} saved to {base_path}merged_predictions/{app}_merged.csv')
 
-    'mrbs': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
-
-    'pagekit': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
-
-    'petclinic': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
-
-    'phoenix': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
-
-    'ppma': ["path-to-trained-webembed-classifier",
-                    "path-to-trained-rted-classifier",
-                    "path-to-trained-pdiff-classifier"],
-}
-
-OUTPUT_CSV = False
-filename = 'csv_results_table/rq3-across-apps.csv'
 
 if __name__ == '__main__':
     os.chdir("..")
 
-    APPS = ['mrbs']
-    SETTINGS = ["across-apps-"]
+    APPS = ['ppma'] # testing, small dataset
 
-    if OUTPUT_CSV:
-        # create csv file to store the results
-        if not os.path.exists(filename):
-            header = ['Setting', 'App', 'Feature', 'Classifier', 'Precision', 'Recall', 'F1']
-            with open(filename, 'w', encoding='UTF8') as f:
-                writer = csv.writer(f)
-                # write the header
-                writer.writerow(header)
+    # for feature in ['content_tags', 'content', 'tags']:
+    for feature in ['content']:
 
-    for app in APPS:
-        print(app)
-        comparison_df = None
-        for feature in np.arange(3):
-            classifier = CLASSIFIERS[app][feature]
-            print(classifier)
+        if OUTPUT_CSV:
+            # create csv file to store the results
+            if not os.path.exists(filename):
+                header = ['Setting', 'App', 'Feature', 'Precision', 'Recall', 'F1']
+                with open(filename, 'w', encoding='UTF8') as f:
+                    writer = csv.writer(f)
+                    # write the header
+                    writer.writerow(header)
 
-            if OUTPUT_CSV:
-                comparison_df = pd.read_csv(filename)
+        for app in APPS:
+            print(app)
+            pred_file = f'{base_path}model_predictions_ss/{setting}/{app}.csv'
+            predictions = pd.read_csv(pred_file)
 
-            column = None
-            if 'dom-rted' in classifier:
-                column = 'dom-rted'.upper()
-            elif 'visual-hyst' in classifier:
-                column = 'VISUAL_Hyst'
-            elif 'visual-pdiff' in classifier:
-                column = 'VISUAL-PDiff'
-            elif 'doc2vec-distance-content' in classifier:
-                column = 'doc2vec-distance-content'
-            elif 'doc2vec-distance-tags' in classifier:
-                column = 'doc2vec-distance-tags'
-            elif 'doc2vec-distance-content-tags' in classifier:
-                column = 'doc2vec-distance-content-tags'
-            elif 'doc2vec-distance-all' in classifier:
-                column = 'doc2vec-distance-all'
+            print(predictions['content-PREDICTION'].value_counts())
 
-            ss = pd.read_csv('script/SS_threshold_set.csv',
-                             usecols=['appname', 'state1', 'state2', column.replace('-', '_')])
-            ss = ss.query("appname == @app")
-            ss = ss.drop(['appname'], axis=1)
+            # predictions = predictions[['state1', 'state2', 'HUMAN_CLASSIFICATION']]
+            predictions = predictions[['state1', 'state2', f'{feature}-PREDICTION']]
 
-            model = None
-            try:
-                model = pickle.load(open(classifier, 'rb'))
-            except FileNotFoundError:
-                print("Cannot find classifier %s" % classifier)
-                exit()
-            except pickle.UnpicklingError:
-                print(classifier)
-                exit()
+            # Convert predictions to a list of tuples
+            tuples = [tuple(x) for x in predictions.to_numpy()]
 
-            # convert distances to similarities
-            ss[column.replace('-', '_')] = ss[column.replace('-', '_')].map(lambda dist: is_clone(model, dist))
+            # Extract unique states and sort them
+            items = natsorted(set.union(set([item[0] for item in tuples]), set([item[1] for item in tuples])))
 
-            tuples = [tuple(x) for x in ss.to_numpy()]
-
-            lis = tuples
-
-            items = natsorted(set.union(set([item[0] for item in lis]), set([item[1] for item in lis])))
-
+            # Create a mapping of items to indices
             value = dict(zip(items, range(len(items))))
             dist_matrix = np.zeros((len(items), len(items)))
 
-            for i in range(len(lis)):
-                # upper triangle
-                dist_matrix[value[lis[i][0]], value[lis[i][1]]] = lis[i][2]
-                # lower triangle
-                dist_matrix[value[lis[i][1]], value[lis[i][0]]] = lis[i][2]
+            # Fill the distance matrix using the predictions
+            for tup in tuples:
+                state1, state2, pred = tup
+                dist_matrix[value[state1], value[state2]] = pred
+                dist_matrix[value[state2], value[state1]] = pred
 
+            # Convert the distance matrix to a DataFrame and save it
             new_ss = pd.DataFrame(dist_matrix, columns=items, index=items)
-            new_ss.to_csv('script/SS_as_distance_matrix.csv')
+            new_ss.to_csv(f'{base_path}script/SS_as_distance_matrix.csv')
 
+            # Build the dictionary of clones from the distance matrix | 'stateX' -> [clones]
             dictionary = {}
             for index, row in new_ss.iterrows():
                 clones = []
@@ -149,60 +101,68 @@ if __name__ == '__main__':
                 clones.append(sel[index].keys().tolist())
                 dictionary[index] = clones
 
-            with open('output/' + app + '.json', 'r') as f:
+            # Load ground truth data
+            with open(f'{base_path}output/' + app + '.json', 'r') as f:
                 data = json.load(f)
 
+            # Initialize counters
             number_in_common = 0
             number_gt = 0
-            number_d2v = len(dictionary.keys())
+            # number_d2v = len(dictionary.keys())  # Number of unique items with predictions
+            number_d2v = 0
 
+            # Compare model predictions to ground truth clusters
             for cluster in data:
                 value = data[cluster]
-                # print(cluster + ' -> ' + str(value))
-
                 key = value[0]  # I treat the first item of the cluster as key
                 value.remove(key)
 
                 if len(value) == 0:  # empty cluster
-                    pass
-                else:
-                    # print(value)
-                    pairs = list(itertools.combinations(value, 2))
-                    # print(pairs)
-                    number_gt += len(pairs)
-                    for pair in pairs:
-                        state1 = pair[0]
-                        state2 = pair[1]
-                        if state2 in dictionary[state1][0]:
-                            number_d2v += 1
-                            number_in_common += 1
-                        else:
-                            number_d2v += 1
-                # print(clones)
-                # print(dict[key])
+                    continue
 
-            print("number of pairs in ground truth: %d" % number_gt)
-            print("number of pairs in common: %d" % number_in_common)
-            print("number of pairs %s: %d" % (column, number_d2v))
+                # Generate all possible pairs of items in the cluster, not including the key???
+                pairs = list(itertools.combinations(value, 2))
 
-            precision = number_in_common / number_d2v
-            print("precision: %.2f" % precision)
-            recall = number_in_common / number_gt
-            print("recall: %.2f" % recall)
-            try:
-                f1 = (2 * ((precision * recall) / (precision + recall)))
-            except ZeroDivisionError:
-                f1 = 0
-            print("f1: %.2f" % f1)
+                number_gt += len(pairs)
+                # Count the number of pairs in the ground truth (GT) clusters.
 
+                for pair in pairs:
+                    state1 = pair[0]
+                    state2 = pair[1]
+
+                    # For each pair of items in the cluster:
+                    # print(f"Clones for {state1}: {dictionary.get(state1, [[]])[0]}")
+                    if state2 in dictionary.get(state1, [[]])[0]:
+                        number_in_common += 1
+                    else:
+                        print(f"Pair {state1} - {state2} not in common for  {cluster}, clones for {state1}: {dictionary.get(state1, [[]])[0]}")
+
+                    number_d2v += 1
+
+            # Calculate precision, recall, and F1 score
+            precision = number_in_common / number_d2v if number_d2v else 0 #  ratio of unique states (bins) covered by the model to the total number of states in the model (NDD2020)
+            recall = number_in_common / number_gt if number_gt else 0 # the number of bins covered by the model to the total number of bins identified by humans (NDD2020)
+            f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) else 0
+
+            # Print the results
+            print(f"number of pairs in ground truth: {number_gt}")
+            print(f"number of pairs in common: {number_in_common}")
+            print(f"number of pairs: {number_d2v}")
+
+            print(f"precision: {precision:.2f}")
+            print(f"recall: {recall:.2f}")
+            print(f"f1: {f1:.2f}")
+
+            # Write results to CSV if needed
             if OUTPUT_CSV:
-                d1 = pd.DataFrame(
-                    {'Setting': SETTINGS[0][:-1],
-                     'App': app,
-                     'Feature': column,
-                     'Classifier': classifier,
-                     'Precision': [precision],
-                     'Recall': [recall],
-                     'F1': [f1]})
-                comparison_df = pd.concat([comparison_df, d1])
+                comparison_df = pd.read_csv(filename) if os.path.exists(filename) else pd.DataFrame(columns=['Setting', 'App', 'Feature', 'Classifier', 'Precision', 'Recall', 'F1'])
+                d1 = pd.DataFrame({
+                    'Setting': setting,
+                    'App': app,
+                    'Feature': feature,
+                    'Precision': [precision],
+                    'Recall': [recall],
+                    'F1': [f1]
+                })
+                comparison_df = pd.concat([comparison_df, d1], ignore_index=True)
                 comparison_df.to_csv(filename, index=False)

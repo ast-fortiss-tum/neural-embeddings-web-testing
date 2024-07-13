@@ -68,7 +68,7 @@ if __name__ == '__main__':
     os.chdir("..")
 
     SETTINGS = ["within-apps-"]
-    APPS = ['mantisbt']
+    # APPS = ['mantisbt']
 
     if OUTPUT_CSV:
         # create csv file to store the results
@@ -82,126 +82,104 @@ if __name__ == '__main__':
     for app in APPS:
         print(app)
         comparison_df = None
-        for feature in np.arange(3):
-            classifier = CLASSIFIERS[app][feature]
-            print(classifier)
+        if OUTPUT_CSV:
+            comparison_df = pd.read_csv(filename)
 
-            if OUTPUT_CSV:
-                comparison_df = pd.read_csv(filename)
+        ss = pd.read_csv('script/SS_threshold_set.csv',
+                            usecols=['appname', 'state1', 'state2', 'HUMAN_CLASSIFICATION'])
+        ss = ss.query("appname == @app")
+        ss = ss.drop(['appname'], axis=1)
 
-            column = None
-            if 'dom-rted' in classifier:
-                column = 'dom-rted'.upper()
-            elif 'visual-hyst' in classifier:
-                column = 'VISUAL_Hyst'
-            elif 'visual-pdiff' in classifier:
-                column = 'VISUAL-PDiff'
-            elif 'doc2vec-distance-content' in classifier:
-                column = 'doc2vec-distance-content'
-            elif 'doc2vec-distance-tags' in classifier:
-                column = 'doc2vec-distance-tags'
-            elif 'doc2vec-distance-content-tags' in classifier:
-                column = 'doc2vec-distance-content-tags'
-            elif 'doc2vec-distance-all' in classifier:
-                column = 'doc2vec-distance-all'
+        model = None
+        # try:
+        #     model = pickle.load(open(classifier, 'rb'))
+        # except FileNotFoundError:
+        #     print("Cannot find classifier %s" % classifier)
+        #     exit()
+        # except pickle.UnpicklingError:
+        #     # print(CLASSIFIER_USED)
+        #     exit()
 
-            ss = pd.read_csv('script/SS_threshold_set.csv',
-                             usecols=['appname', 'state1', 'state2', column.replace('-', '_')])
-            ss = ss.query("appname == @app")
-            ss = ss.drop(['appname'], axis=1)
+        # convert distances to similarities
+        ss['HUMAN_CLASSIFICATION'] = ss['HUMAN_CLASSIFICATION'].apply(lambda x: 0 if x == 2 else 1)
 
-            model = None
-            try:
-                model = pickle.load(open(classifier, 'rb'))
-            except FileNotFoundError:
-                print("Cannot find classifier %s" % classifier)
-                exit()
-            # except pickle.UnpicklingError:
-            #     # print(CLASSIFIER_USED)
-            #     exit()
+        tuples = [tuple(x) for x in ss.to_numpy()]
 
-            # convert distances to similarities
-            ss[column.replace('-', '_')] = ss[column.replace('-', '_')].map(lambda dist: is_clone(model, dist))
+        lis = tuples
 
-            tuples = [tuple(x) for x in ss.to_numpy()]
+        items = natsorted(set.union(set([item[0] for item in lis]), set([item[1] for item in lis])))
 
-            lis = tuples
+        value = dict(zip(items, range(len(items))))
+        dist_matrix = np.zeros((len(items), len(items)))
 
-            items = natsorted(set.union(set([item[0] for item in lis]), set([item[1] for item in lis])))
+        for i in range(len(lis)):
+            # upper triangle
+            dist_matrix[value[lis[i][0]], value[lis[i][1]]] = lis[i][2]
+            # lower triangle
+            dist_matrix[value[lis[i][1]], value[lis[i][0]]] = lis[i][2]
 
-            value = dict(zip(items, range(len(items))))
-            dist_matrix = np.zeros((len(items), len(items)))
+        new_ss = pd.DataFrame(dist_matrix, columns=items, index=items)
+        new_ss.to_csv('script/SS_as_distance_matrix.csv')
 
-            for i in range(len(lis)):
-                # upper triangle
-                dist_matrix[value[lis[i][0]], value[lis[i][1]]] = lis[i][2]
-                # lower triangle
-                dist_matrix[value[lis[i][1]], value[lis[i][0]]] = lis[i][2]
+        dictionary = {}
+        for index, row in new_ss.iterrows():
+            clones = []
+            sel = new_ss.loc[new_ss[index] == 1.0]
+            clones.append(sel[index].keys().tolist())
+            dictionary[index] = clones
 
-            new_ss = pd.DataFrame(dist_matrix, columns=items, index=items)
-            new_ss.to_csv('script/SS_as_distance_matrix.csv')
+        with open('output/' + app + '.json', 'r') as f:
+            data = json.load(f)
 
-            dictionary = {}
-            for index, row in new_ss.iterrows():
-                clones = []
-                sel = new_ss.loc[new_ss[index] == 1.0]
-                clones.append(sel[index].keys().tolist())
-                dictionary[index] = clones
+        number_in_common = 0
+        number_gt = 0
+        number_d2v = len(dictionary.keys())
 
-            with open('output/' + app + '.json', 'r') as f:
-                data = json.load(f)
+        for cluster in data:
+            value = data[cluster]
+            print(cluster + ' -> ' + str(value))
 
-            number_in_common = 0
-            number_gt = 0
-            number_d2v = len(dictionary.keys())
+            key = value[0]  # I treat the first item of the cluster as key
+            value.remove(key)
 
-            for cluster in data:
-                value = data[cluster]
-                # print(cluster + ' -> ' + str(value))
+            if len(value) == 0:  # empty cluster
+                pass
+            else:
+                # print(value)
+                pairs = list(itertools.combinations(value, 2))
+                # print(pairs)
+                number_gt += len(pairs)
+                for pair in pairs:
+                    state1 = pair[0]
+                    state2 = pair[1]
+                    if state2 in dictionary[state1][0]:
+                        number_d2v += 1
+                        number_in_common += 1
+                    else:
+                        number_d2v += 1
+            # print(clones)
+            # print(dict[key])
 
-                key = value[0]  # I treat the first item of the cluster as key
-                value.remove(key)
+    print("number of pairs in ground truth: %d" % number_gt)
+    print("number of pairs in common: %d" % number_in_common)
+    print("number of pairs %d" % (number_d2v))
 
-                if len(value) == 0:  # empty cluster
-                    pass
-                else:
-                    # print(value)
-                    pairs = list(itertools.combinations(value, 2))
-                    # print(pairs)
-                    number_gt += len(pairs)
-                    for pair in pairs:
-                        state1 = pair[0]
-                        state2 = pair[1]
-                        if state2 in dictionary[state1][0]:
-                            number_d2v += 1
-                            number_in_common += 1
-                        else:
-                            number_d2v += 1
-                # print(clones)
-                # print(dict[key])
+    precision = number_in_common / number_d2v
+    print("precision: %.2f" % precision)
+    recall = number_in_common / number_gt
+    print("recall: %.2f" % recall)
+    try:
+        f1 = (2 * ((precision * recall) / (precision + recall)))
+    except ZeroDivisionError:
+        f1 = 0
+    print("f1: %.2f" % f1)
 
-            print("number of pairs in ground truth: %d" % number_gt)
-            print("number of pairs in common: %d" % number_in_common)
-            print("number of pairs %s: %d" % (column, number_d2v))
-
-            precision = number_in_common / number_d2v
-            print("precision: %.2f" % precision)
-            recall = number_in_common / number_gt
-            print("recall: %.2f" % recall)
-            try:
-                f1 = (2 * ((precision * recall) / (precision + recall)))
-            except ZeroDivisionError:
-                f1 = 0
-            print("f1: %.2f" % f1)
-
-            if OUTPUT_CSV:
-                d1 = pd.DataFrame(
-                    {'Setting': SETTINGS[0][:-1],
-                     'App': app,
-                     'Feature': column,
-                     'Classifier': classifier,
-                     'Precision': [precision],
-                     'Recall': [recall],
-                     'F1': [f1]})
-                comparison_df = pd.concat([comparison_df, d1])
-                comparison_df.to_csv(filename, index=False)
+    if OUTPUT_CSV:
+        d1 = pd.DataFrame(
+            {'Setting': SETTINGS[0][:-1],
+                'App': app,
+                'Precision': [precision],
+                'Recall': [recall],
+                'F1': [f1]})
+        comparison_df = pd.concat([comparison_df, d1])
+        comparison_df.to_csv(filename, index=False)

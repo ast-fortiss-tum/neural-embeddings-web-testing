@@ -77,6 +77,9 @@ def bert_equals(dom1, dom2, model, tokenizer, feature='content_tags'):
     """
     corpus1 = process_html(dom1)
     corpus2 = process_html(dom2)
+
+    print(f"Logging 2 states: to compare: \ndom1{dom1}\ndom2{dom2}") #TODO: remove
+
     if feature.endswith('content_tags'):
         data1 = corpus1[2]
         data2 = corpus2[2]
@@ -99,6 +102,7 @@ def bert_equals(dom1, dom2, model, tokenizer, feature='content_tags'):
     print(f'{main.hf_model_name} | Predicted class: {"near-dup/clone" if predicted == 1 else "distinct"}')
     # print(main.hf_model_name, "=====================================")
 
+    # returns 0 for distinct, 1 for clone/near-duplicate
     return predicted
 
 # Fix JSON strings incoming from the crawler

@@ -17,9 +17,9 @@ public class RunCrawler {
     private static final long WAIT_TIME_AFTER_EVENT = 500; //500
     private static final long WAIT_TIME_AFTER_RELOAD = 500; //500
 
-    private static final String URL = "http://localhost:3000/addressbook/";
 //    private static final String URL = "https://www.york.ac.uk/teaching/cws/wws/webpage1.html";
-    private static final String APP_NAME = "addressbook";
+    private static final String URL = "http://localhost:3000/claroline11110/";
+    private static final String APP_NAME = "claroline";
     private static final int maxCrawlTime = 60;
 
     public static void main(String[] args) throws Exception {
@@ -37,8 +37,8 @@ public class RunCrawler {
         builder.setUnlimitedStates();
         builder.setMaximumRunTime(maxCrawlTime, TimeUnit.MINUTES);
 
-        // 5. setup abstract function to be used
-//        builder.setStateVertexFactory(new Word2VecEmbeddingStateVertexFactory()); //comment in for using Transformers SAF
+//         5. setup abstract function to be used
+        builder.setStateVertexFactory(new Word2VecEmbeddingStateVertexFactory()); //comment in for using Transformers SAF
 
         // set timeouts
         builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
@@ -67,7 +67,9 @@ public class RunCrawler {
                     System.out.println("Set input fields for addressbook");
                     break;
                 case "claroline":
-                    System.out.println("TODO IMPLEMENT HANDLING FOR CLAROLINE");
+                    input.inputField(new FormInput(FormInput.InputType.INPUT, new Identification(Identification.How.name, "login"))).inputValues("admin");
+                    input.inputField(new FormInput(FormInput.InputType.PASSWORD, new Identification(Identification.How.name, "password"))).inputValues("admin");
+                    System.out.println("Set input fields for addressbook");
                     break;
                 default:
                     System.out.println(APP_NAME + " not implemented yet");

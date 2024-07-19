@@ -11,7 +11,7 @@ from flask import Flask, request
 
 no_of_inferences = 0
 
-hf_model_name = "lgk03/NDD-addressbook_test-content" # this gets overwritten by the env variable in load_model_and_tokenizer
+hf_model_name = "lgk03/NDD-claroline_test-content" # this gets overwritten by the env variable in load_model_and_tokenizer
 
 # counter for number of inferences
 def increase_no_of_inferences():

@@ -13,43 +13,17 @@ base_path = '/Users/lgk/git/uni/web_test_generation/neural-embeddings-web-testin
 APPS = ['addressbook', 'claroline', 'ppma', 'mrbs', 'mantisbt', 'dimeshift', 'pagekit', 'phoenix', 'petclinic']
 
 OUTPUT_CSV = True
+ADJUSTED_CW = True # if True, use the trained models with the adjusted class weights
 
-setting = "across_apps" # within_apps or across_apps
+setting = "within_apps" # within_apps or across_apps
 filename = f'{base_path}BERT-SAF_csv_results_table/rq2-{setting}.csv' # separate file for each setting (within apps, across apps)
-
-# def merge_predictions(base_path, setting, app):
-#     features = ['content_tags', 'content', 'tags']
-#     merged_df = None
-
-#     for feature in features:
-#         pred_file = f'{base_path}model_predictions_ss/{setting}/{feature}/{app}.csv'
-#         predictions = pd.read_csv(pred_file)
-
-#         if merged_df is None:
-#             # First feature: include all columns
-#             predictions.rename(columns={'PREDICTION': f'{feature}-PREDICTION'}, inplace=True)
-#             merged_df = predictions
-#         else:
-#             # Subsequent features: only add the PREDICTION column
-#             predictions = predictions[['state1', 'state2', 'PREDICTION']]
-#             predictions.rename(columns={'PREDICTION': f'{feature}-PREDICTION'}, inplace=True)
-#             merged_df = pd.merge(merged_df, predictions, on=['state1', 'state2'], how='outer')
-
-#     return merged_df
-
-# if __name__ == '__main__':
-#     setting = "across_apps" # or "within_apps"
-
-#     for app in APPS:
-#         merged_predictions = merge_predictions(base_path, setting, app)
-#         merged_predictions.to_csv(f'{base_path}model_predictions_ss/{setting}/{app}.csv', index=False)
-#         print(f'Merged predictions for {app} saved to {base_path}merged_predictions/{app}_merged.csv')
-
+if ADJUSTED_CW:
+    filename = f'{base_path}BERT-SAF_csv_results_table/CWAdj-rq2-{setting}.csv'
 
 if __name__ == '__main__':
     os.chdir("..")
 
-    APPS = ['ppma'] # testing, small dataset
+    # APPS = ['pagekit'] # testing, small dataset
 
     # for feature in ['content_tags', 'content', 'tags']:
     for feature in ['content']:
@@ -66,12 +40,12 @@ if __name__ == '__main__':
         for app in APPS:
             print(app)
             pred_file = f'{base_path}model_predictions_ss/{setting}/{app}.csv'
+            if ADJUSTED_CW:
+                pred_file = f'{base_path}model_predictions_ss/{setting}/CWAdj-{app}.csv'
             predictions = pd.read_csv(pred_file)
 
-            print(predictions['content-PREDICTION'].value_counts())
-
-            # predictions = predictions[['state1', 'state2', 'HUMAN_CLASSIFICATION']]
-            predictions = predictions[['state1', 'state2', f'{feature}-PREDICTION']]
+            predictions = predictions[['state1', 'state2', 'HUMAN_CLASSIFICATION']]
+            # predictions = predictions[['state1', 'state2', f'{feature}-PREDICTION']]
 
             # Convert predictions to a list of tuples
             tuples = [tuple(x) for x in predictions.to_numpy()]
@@ -108,8 +82,8 @@ if __name__ == '__main__':
             # Initialize counters
             number_in_common = 0
             number_gt = 0
-            # number_d2v = len(dictionary.keys())  # Number of unique items with predictions
-            number_d2v = 0
+            number_d2v = len(dictionary.keys())  # Number of unique items with predictions
+            # number_d2v = 0 # this is not really making a huge difference for most apps as the number of unique items is not that high in comparison to the number of pairs
 
             # Compare model predictions to ground truth clusters
             for cluster in data:
@@ -135,7 +109,7 @@ if __name__ == '__main__':
                     if state2 in dictionary.get(state1, [[]])[0]:
                         number_in_common += 1
                     else:
-                        print(f"Pair {state1} - {state2} not in common for  {cluster}, clones for {state1}: {dictionary.get(state1, [[]])[0]}")
+                        print(f"Pair {state1} - {state2} not in common for  {cluster}")
 
                     number_d2v += 1
 

@@ -13,20 +13,20 @@ base_path = '/Users/lgk/git/uni/web_test_generation/neural-embeddings-web-testin
 APPS = ['addressbook', 'claroline', 'ppma', 'mrbs', 'mantisbt', 'dimeshift', 'pagekit', 'phoenix', 'petclinic']
 
 OUTPUT_CSV = True
-ADJUSTED_CW = True # if True, use the trained models with the adjusted class weights
+ADJUSTED_CW = False # if True, use the trained models with the adjusted class weights
 
 setting = "within_apps" # within_apps or across_apps
-filename = f'{base_path}BERT-SAF_csv_results_table/rq2-{setting}.csv' # separate file for each setting (within apps, across apps)
-if ADJUSTED_CW:
-    filename = f'{base_path}BERT-SAF_csv_results_table/CWAdj-rq2-{setting}.csv'
+filename = f'{base_path}BERT-SAF_csv_results_table/{"CWAdj-" if ADJUSTED_CW else ""}rq2-{setting}.csv'
 
 if __name__ == '__main__':
     os.chdir("..")
 
-    # APPS = ['pagekit'] # testing, small dataset
+    # APPS = ['pagekit']
 
-    # for feature in ['content_tags', 'content', 'tags']:
-    for feature in ['content']:
+    for feature in ['content_tags', 'content', 'tags']:
+        if ADJUSTED_CW and feature not in ['content']:
+            print(f"Skipping {feature} for adjusted class weights | not trained yet.")
+            continue
 
         if OUTPUT_CSV:
             # create csv file to store the results
@@ -39,9 +39,7 @@ if __name__ == '__main__':
 
         for app in APPS:
             print(app)
-            pred_file = f'{base_path}model_predictions_ss/{setting}/{app}.csv'
-            if ADJUSTED_CW:
-                pred_file = f'{base_path}model_predictions_ss/{setting}/CWAdj-{app}.csv'
+            pred_file = f'{base_path}model_predictions_ss/{setting}/{"CWAdj-" if ADJUSTED_CW else ""}{app}.csv'
             predictions = pd.read_csv(pred_file)
 
             predictions = predictions[['state1', 'state2', 'HUMAN_CLASSIFICATION']]
@@ -82,8 +80,8 @@ if __name__ == '__main__':
             # Initialize counters
             number_in_common = 0
             number_gt = 0
-            number_d2v = len(dictionary.keys())  # Number of unique items with predictions
-            # number_d2v = 0 # this is not really making a huge difference for most apps as the number of unique items is not that high in comparison to the number of pairs
+            # number_d2v = len(dictionary.keys())  # Number of unique items with predictions
+            number_d2v = 0 # this is not really making a huge difference for most apps as the number of unique items is not that high in comparison to the number of pairs
 
             # Compare model predictions to ground truth clusters
             for cluster in data:
@@ -119,13 +117,13 @@ if __name__ == '__main__':
             f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) else 0
 
             # Print the results
-            print(f"number of pairs in ground truth: {number_gt}")
-            print(f"number of pairs in common: {number_in_common}")
-            print(f"number of pairs: {number_d2v}")
+            # print(f"number of pairs in ground truth: {number_gt}")
+            # print(f"number of pairs in common: {number_in_common}")
+            # print(f"number of pairs: {number_d2v}")
 
-            print(f"precision: {precision:.2f}")
-            print(f"recall: {recall:.2f}")
-            print(f"f1: {f1:.2f}")
+            # print(f"precision: {precision:.2f}")
+            # print(f"recall: {recall:.2f}")
+            # print(f"f1: {f1:.2f}")
 
             # Write results to CSV if needed
             if OUTPUT_CSV:

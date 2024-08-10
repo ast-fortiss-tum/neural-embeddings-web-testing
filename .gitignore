@@ -128,7 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-app_results/.DS_Store
+*/.DS_Store
 .idea
 /script/SS_threshold_set_big.csv
 csv_results_table/*

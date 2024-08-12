@@ -1,0 +1,7 @@
+transformers>=4.30.0
+datasets>=2.12.0
+evaluate>=0.3.0
+accelerate>=0.18.0
+huggingface_hub
+pandas
+scikit-learn

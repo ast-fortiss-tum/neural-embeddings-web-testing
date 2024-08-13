@@ -135,6 +135,9 @@ csv_results_table/*
 trained_classifiers/
 trained_model/
 SS_as_distance_matrix.csv
+model_predictions_ss/
+BERT-SAF_csv_results_table/
+raw_data/
 
 # Local Testing
 test.py

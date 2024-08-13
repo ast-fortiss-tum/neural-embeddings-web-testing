@@ -138,3 +138,5 @@ SS_as_distance_matrix.csv
 
 # Local Testing
 test.py
+
+out/

@@ -16,7 +16,7 @@ OUTPUT_CSV = True
 ADJUSTED_CW = True # if True, use the trained models with the adjusted class weights
 
 setting = "within_apps" # within_apps or across_apps
-filename = f'{base_path}BERT-SAF_csv_results_table/{"CWAdj-" if ADJUSTED_CW else ""}rq2-{setting}.csv'
+filename = f'{base_path}0-BERT-SAF_csv_results_table/{"CWAdj-" if ADJUSTED_CW else ""}rq2-{setting}.csv'
 
 if __name__ == '__main__':
     os.chdir("..")

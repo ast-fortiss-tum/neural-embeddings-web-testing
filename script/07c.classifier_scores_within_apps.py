@@ -24,15 +24,13 @@ if __name__ == '__main__':
     Classifiers tested on 20% app1 in SS
     '''
 
-    OUTPUT_CSV = False
+    OUTPUT_CSV = True
     SAVE_MODELS = True
 
-    # embedding_type = ['content', 'tags', 'content_tags', 'all', 'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff']
+    embedding_type = ['content', 'tags', 'content_tags', 'DOM_RTED', 'VISUAL_PDiff']
 
-    # apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
+    apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
 
-    apps = ['dimeshift']
-    embedding_type = ['DOM_RTED']
 
     # create csv file to store the results
     if not os.path.exists(r'../csv_results_table/rq1-within-apps.csv'):
@@ -53,7 +51,7 @@ if __name__ == '__main__':
             names = [
                 # "Dummy",
                 # "Threshold",
-                # "SVM RBF",
+                "SVM RBF", # => best classifier according to the paper
                 # "Decision Tree",
                 # "Gaussian Naive Bayes",
                 # "Random Forest",
@@ -65,7 +63,7 @@ if __name__ == '__main__':
                 # DummyClassifier(strategy="stratified"),
                 # "Threshold",
                 # KNeighborsClassifier(),
-                # SVC(),
+                SVC(),
                 # DecisionTreeClassifier(),
                 # GaussianNB(),
                 # RandomForestClassifier(),
@@ -137,7 +135,7 @@ if __name__ == '__main__':
                     f1_0 = 2 * ((precision * recall) / (precision + recall))
                     f1_1 = 2 * ((precision * recall) / (precision + recall))
                 else:
-                    df = pd.read_csv('SS_threshold_set.csv')
+                    df = pd.read_csv('SS_threshold_set.csv', quotechar='"', escapechar='\\', on_bad_lines='warn')
                     df = df.query("appname == @app")
 
                     X = np.array(df[feature]).reshape(-1, 1)

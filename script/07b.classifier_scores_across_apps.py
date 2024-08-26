@@ -21,15 +21,16 @@ if __name__ == '__main__':
     Classifiers tested on 1 apps in SS (or 8 apps)
     '''
 
-    OUTPUT_CSV = False
+    OUTPUT_CSV = True
     SAVE_MODELS = True
     filename = ''
 
     # embedding_type = ['content', 'tags', 'content_tags', 'all', 'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff']
-    embedding_type = ['content', 'tags', 'content_tags', 'all', ]
+    # embedding_type = ['content', 'tags', 'content_tags', 'all', ]
+    # embedding_type = ['content', 'tags', 'content_tags']
+    embedding_type = ['content', 'tags', 'content_tags', 'DOM_RTED', 'VISUAL_PDiff']
 
-    # apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
-    apps = ['mrbs']
+    apps = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
 
     for app in apps:
         start_time = datetime.now()
@@ -54,12 +55,12 @@ if __name__ == '__main__':
                 # "Dummy",
                 # "Threshold",
                 # "Nearest Neighbors",
-                "SVM RBF",
-                "Decision Tree",
-                "Gaussian Naive Bayes",
-                "Random Forest",
-                "Ensemble",
-                "Neural Network",
+                "SVM RBF", # => best classifier according to the paper
+                # "Decision Tree",
+                # "Gaussian Naive Bayes",
+                # "Random Forest",
+                # "Ensemble",
+                # "Neural Network",
                 # "XGBoost"
             ]
 
@@ -67,21 +68,20 @@ if __name__ == '__main__':
                 # DummyClassifier(strategy="stratified"),
                 # "Threshold",
                 # KNeighborsClassifier(),
-                SVC(),
-                DecisionTreeClassifier(),
-                GaussianNB(),
-                RandomForestClassifier(),
-                VotingClassifier(estimators=[('knn', KNeighborsClassifier()),
-                                             ('svm', SVC()),
-                                             ('dt', DecisionTreeClassifier()),
-                                             ('gnb', GaussianNB()),
-                                             ('rf', RandomForestClassifier())]),
-                MLPClassifier(max_iter=1000),
+                SVC(), # => best classifier according to the paper
+                # DecisionTreeClassifier(),
+                # GaussianNB(),
+                # RandomForestClassifier(),
+                # VotingClassifier(estimators=[('knn', KNeighborsClassifier()),
+                #                             ('svm', SVC()),
+                #                             ('dt', DecisionTreeClassifier()),
+                #                             ('gnb', GaussianNB()),
+                #                             ('rf', RandomForestClassifier())]),
+                # MLPClassifier(max_iter=1000),
                 # GradientBoostingClassifier(n_estimators=100, max_depth=1)
             ]
 
             for name, model in zip(names, classifiers):
-
                 if emb in {'DOM_RTED', 'VISUAL_Hyst', 'VISUAL_PDiff'}:
                     feature = emb
                 else:
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
                     df_train = pd.DataFrame(list(zip(X_train, y_train)),
                                             columns=[feature,
-                                                     'HUMAN_CLASSIFICATION'])
+                                                        'HUMAN_CLASSIFICATION'])
 
                     # 0, 1 = clones; 2 = distinct
                     df_clones = df_train.query("HUMAN_CLASSIFICATION != 2")
@@ -122,7 +122,7 @@ if __name__ == '__main__':
                     df_distinct = df_distinct[feature].to_list()
 
                     df_test = pd.DataFrame(list(zip(X_test, y_test)),
-                                           columns=[feature,
+                                            columns=[feature,
                                                     'HUMAN_CLASSIFICATION'])
 
                     threshold = 0.8
@@ -143,7 +143,7 @@ if __name__ == '__main__':
                     f1_0 = 2 * ((precision * recall) / (precision + recall))
                     f1_1 = 2 * ((precision * recall) / (precision + recall))
                 else:
-                    df_train = pd.read_csv('SS_threshold_set.csv')
+                    df_train = pd.read_csv('SS_threshold_set.csv', quotechar='"', escapechar='\\', on_bad_lines='warn')
                     df_test = pd.read_csv('SS_threshold_set.csv')
 
                     df_train = df_train.query("appname == @app")
@@ -164,17 +164,18 @@ if __name__ == '__main__':
                     y_test[y_test == 1] = 0  # harmonize near-duplicates as 0's
                     y_test[y_test == 2] = 1  # convert distinct as 1's
 
-                # fit the classifier
+                # train the classifier
                 model = model.fit(X_train, y_train)
 
                 # save the classifier
                 if SAVE_MODELS:
                     classifier_path = '../trained_classifiers/across-apps-' + app + '-' + \
-                                      name.replace(" ", "-").replace("_", "-").lower() + \
-                                      '-' + \
-                                      feature.replace(" ", "-").replace("_", "-").lower() + \
-                                      '.sav'
+                                        name.replace(" ", "-").replace("_", "-").lower() + \
+                                        '-' + \
+                                        feature.replace(" ", "-").replace("_", "-").lower() + \
+                                        '.sav'
                     pickle.dump(model, open(classifier_path, 'wb'))
+                    print(f'Saved classifier at {classifier_path}')
 
                 # predict the scores
                 y_pred = model.predict(X_test)
@@ -187,11 +188,11 @@ if __name__ == '__main__':
                 recall = recall_score(y_test, y_pred)
 
                 print(f'{name}, '
-                      f'accuracy: {accuracy}, '
-                      f'precision: {precision}, '
-                      f'recall: {recall}, '
-                      f'f1_0: {f1_0}, '
-                      f'f1_1: {f1_1}')
+                        f'accuracy: {accuracy}, '
+                        f'precision: {precision}, '
+                        f'recall: {recall}, '
+                        f'f1_0: {f1_0}, '
+                        f'f1_1: {f1_1}')
 
                 if OUTPUT_CSV:
                     a = ''
@@ -212,14 +213,14 @@ if __name__ == '__main__':
 
                     d1 = pd.DataFrame(
                         {'App': app,
-                         'Model': ['DS_' + emb + '_' + 'modelsize100' + 'epoch31'],
-                         'Embedding': [a],
-                         'Classifier': [name],
-                         'Accuracy': [accuracy],
-                         'Precision': [precision],
-                         'Recall': [recall],
-                         'F1_0': [f1_0],
-                         'F1_1': [f1_1]})
+                            'Model': ['DS_' + emb + '_' + 'modelsize100' + 'epoch31'],
+                            'Embedding': [a],
+                            'Classifier': [name],
+                            'Accuracy': [accuracy],
+                            'Precision': [precision],
+                            'Recall': [recall],
+                            'F1_0': [f1_0],
+                            'F1_1': [f1_1]})
 
                     comparison_df = pd.concat([comparison_df, d1])
 

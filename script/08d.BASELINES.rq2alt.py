@@ -14,30 +14,31 @@ OUTPUT_CSV = True # if True, write the results to a CSV file
 setting = "within-apps" # within-apps or across-apps
 print(f'====== Setting: {setting} ======')
 
-filename = f'{base_path}0-WebEmbed_csv_results_table/rq2-ALT-{setting}.csv'
+filename = f'{base_path}0-Baselines_csv_results_table/rq2-ALT-{setting}.csv'
 ss = pd.read_csv(f'{base_path}script/SS_threshold_set.csv')
 
-DISTINCT_CLASS = 1 # according to 07b.classifier_scores_across_apps.py
-NEAR_DUP_CLASS = 0
-baseline = 'd2v'
+DISTINCT_CLASS = 0
+NEAR_DUP_CLASS = 1
+print(f'NEAR_DUP_CLASS: {NEAR_DUP_CLASS} | DISTINCT_CLASS: {DISTINCT_CLASS}')
 
 if __name__ == '__main__':
     os.chdir("..")
 
     if OUTPUT_CSV:
         if not os.path.exists(filename):
-            header = ['Setting', 'App', 'Baseline', 'Feature', 'F1', 'Precision', 'Recall']
+            header = ['Setting', 'App', 'Baseline', 'F1', 'Precision', 'Recall']
             with open(filename, 'w', encoding='UTF8') as f:
                 writer = csv.writer(f)
                 writer.writerow(header)
 
-    for feature in ['content_tags', 'content', 'tags']:
+    for baseline in ['rted', 'pdiff']:
+
         for app in APPS:
-            print(f'{app} - {baseline} - {feature}')
+            print(f'{app} - {baseline}')
             ss = ss[ss['appname'] == app]
             cluster_file_name = f'{base_path}output/{app}.json'
 
-            pred_file = f'{base_path}script/distance_matrices/SS_as_distance_matrix_{setting}-{app}-{baseline}-{feature}.csv'
+            pred_file = f'{base_path}script/distance_matrices/SS_as_distance_matrix_{setting}-{app}-{baseline}.csv'
 
             predictions = pd.read_csv(pred_file, index_col=0)
 
@@ -88,7 +89,7 @@ if __name__ == '__main__':
             recall = len(covered_bins) / number_of_bins if number_of_bins > 0 else 0
             f1_score = 2 * (precision * recall) / (precision + recall) if precision + recall > 0 else 0
 
-            print(f"App: {app}, Baseline: {baseline}, Feature: {feature}")
+            print(f"App: {app}, Baseline: {baseline}")
             print(f"Covered bins: {len(covered_bins)}")
             print(f"Number of bins: {number_of_bins}")
             print(f"Total number of states: {total_number_of_states}")
@@ -103,4 +104,4 @@ if __name__ == '__main__':
             if OUTPUT_CSV:
                 with open(filename, 'a', encoding='UTF8') as f:
                     writer = csv.writer(f)
-                    writer.writerow([setting, app, baseline, feature, f1_score, precision, recall])
+                    writer.writerow([setting, app, baseline, f1_score,precision, recall])

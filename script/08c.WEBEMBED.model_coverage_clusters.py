@@ -25,7 +25,6 @@ SETTINGS = ["within-apps"] # 'within-apps' or 'across-apps'
 print(f'====== Setting: {SETTINGS[0]} ======')
 
 APPS = ['addressbook', 'claroline', 'dimeshift', 'mantisbt', 'mrbs', 'pagekit', 'petclinic', 'phoenix', 'ppma']
-APPS = ['mrbs']
 
 CLASSIFIERS = {
     'addressbook': [f"trained_classifiers/{SETTINGS[0]}-addressbook-svm-rbf-doc2vec-distance-content-tags.sav",
@@ -132,7 +131,7 @@ if __name__ == '__main__':
                 dist_matrix[value[lis[i][1]], value[lis[i][0]]] = lis[i][2]
 
             new_ss = pd.DataFrame(dist_matrix, columns=items, index=items)
-            # new_ss.to_csv(f'script/distance_matrices/SS_as_distance_matrix_{SETTINGS[0]}-{app}-d2v-{"content_tags" if feature==0 else "content" if feature==1 else "tags"}.csv') # Distance matrix with predictions
+            new_ss.to_csv(f'script/distance_matrices/SS_as_distance_matrix_{SETTINGS[0]}-{app}-d2v-{"content_tags" if feature==0 else "content" if feature==1 else "tags"}.csv') # Distance matrix with predictions
 
             # # model coverage (orignal rq2 calculation) starting here
             continue

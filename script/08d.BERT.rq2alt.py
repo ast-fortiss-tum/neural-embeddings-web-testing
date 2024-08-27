@@ -8,23 +8,25 @@ import pandas as pd
 base_path = '/Users/lgk/git/uni/web_test_generation/neural-embeddings-web-testing/'
 
 APPS = ['addressbook', 'claroline', 'ppma', 'mrbs', 'mantisbt', 'dimeshift', 'pagekit', 'phoenix', 'petclinic']
-OUTPUT_CSV = False # if True, write the results to a CSV file
-ADJUSTED_CW = False # if True, use the trained models with the adjusted class weights
 
-setting = "within-apps" # within_apps or across_apps
+OUTPUT_CSV = True # if True, write the results to a CSV file
+ADJUSTED_CW = True # if True, use the trained models with the adjusted class weights
+
+setting = "within_apps" # within_apps or across_apps
 print(f'====== Setting: {setting} ======')
 
 filename = f'{base_path}0-BERT-SAF_csv_results_table/{"CWAdj-" if ADJUSTED_CW else ""}rq2-ALT-{setting}.csv'
 
 DISTINCT_CLASS = 0
 NEAR_DUP_CLASS = 1
+print(f'NEAR_DUP_CLASS: {NEAR_DUP_CLASS} | DISTINCT_CLASS: {DISTINCT_CLASS}')
 
 if __name__ == '__main__':
     os.chdir("..")
 
     if OUTPUT_CSV:
         if not os.path.exists(filename):
-            header = ['Setting', 'App', 'Feature', 'Precision', 'Recall', 'F1']
+            header = ['Setting', 'App', 'Feature', 'F1', 'Precision', 'Recall']
             with open(filename, 'w', encoding='UTF8') as f:
                 writer = csv.writer(f)
                 writer.writerow(header)
@@ -32,13 +34,13 @@ if __name__ == '__main__':
     for feature in ['content_tags', 'content', 'tags']:
         prediction_column = f'{feature}-PREDICTION' # 'HUMAN_CLASSIFICATION'
         if ADJUSTED_CW and feature not in ['content']:
-            print(f"Skipping {feature} for adjusted class weights | not trained yet.")
+            print(f"Skipping {feature} for adjusted class weights model variant | not trained yet.")
             continue
 
         for app in APPS:
             print(f'{app} - {feature} - {prediction_column} - {setting}')
             cluster_file_name = f'output/{app}.json' # file listing all clusters for the app and the corresponding states
-            pred_file = f'{base_path}model_predictions_ss/{setting}/{"CWAdj-" if ADJUSTED_CW else ""}{app}.csv'
+            pred_file = f'model_predictions_ss/{setting}/{"CWAdj-" if ADJUSTED_CW else ""}{app}.csv' # ss with predictions by the model
             predictions = pd.read_csv(pred_file)
 
             model = [] # list of states that are included in model
@@ -120,4 +122,4 @@ if __name__ == '__main__':
             if OUTPUT_CSV:
                 with open(filename, 'a', encoding='UTF8') as f:
                     writer = csv.writer(f)
-                    writer.writerow([setting, app, feature, precision, recall, f1_score])
+                    writer.writerow([setting, app, feature, f1_score, precision, recall])

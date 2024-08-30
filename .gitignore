@@ -129,6 +129,8 @@ dmypy.json
 .pyre/
 
 */.DS_Store
+.DS_Store
+
 .idea
 /script/SS_threshold_set_big.csv
 csv_results_table/*
@@ -139,7 +141,15 @@ model_predictions_ss/
 BERT-SAF_csv_results_table/
 raw_data/
 
-# Local Testing
-test.py
-
 out/
+app.iml
+
+0-BERT-SAF_csv_results_table/
+0-WebEmbed_csv_results_table/
+app_results/
+environment.yml
+output/recap.csv
+
+pom.xml
+pyrightconfig.json
+script/

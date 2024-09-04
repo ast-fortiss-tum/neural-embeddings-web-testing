@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     for feature in ['content_tags', 'content', 'tags']:
         prediction_column = f'{feature}-PREDICTION' # 'HUMAN_CLASSIFICATION'
-        if ADJUSTED_CW and feature not in ['content']:
+        if setting=='across_apps' and ADJUSTED_CW and feature not in ['content']:
             print(f"Skipping {feature} for adjusted class weights model variant | not trained yet.")
             continue
 
